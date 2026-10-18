@@ -13,11 +13,37 @@
         }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); position: relative; overflow-x: hidden; }
         
-        /* চলমান টেক্সট */
+        /* ডিসপ্লের চারপাশে এলোমেলো ও মসৃণভাবে ঘুরতে থাকা ভাসমান টেক্সট (Floating Text) */
+        .floating-text-container {
+            position: fixed;
+            top: 15%;
+            left: 5%;
+            width: 90%;
+            height: 70vh;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+        .floating-text {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: rgba(0, 77, 64, 0.25);
+            white-space: nowrap;
+            animation: floatAround 18s ease-in-out infinite alternate;
+        }
+        @keyframes floatAround {
+            0% { top: 10%; left: 10%; transform: rotate(0deg); }
+            25% { top: 70%; left: 60%; transform: rotate(5deg); }
+            50% { top: 30%; left: 80%; transform: rotate(-5deg); }
+            75% { top: 80%; left: 20%; transform: rotate(3deg); }
+            100% { top: 10%; left: 10%; transform: rotate(0deg); }
+        }
+
+        /* হেডার ও চলমান বার */
         .marquee-container { background: #111; color: rgba(255, 255, 255, 0.7); font-size: 14px; padding: 6px 0; white-space: nowrap; overflow: hidden; }
-        
         header { background: var(--primary-color); color: white; text-align: center; padding: 20px; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; transition: 0.3s; }
         header img { max-height: 80px; max-width: 80px; object-fit: cover; border-radius: 8px; border: 2px solid white; }
         
@@ -25,7 +51,7 @@
         nav a { color: white; text-decoration: none; padding: 10px 14px; font-weight: bold; cursor: pointer; font-size: 14px; }
         nav a:hover { background: rgba(0,0,0,0.2); border-radius: 4px; }
         
-        .container { max-width: 1100px; margin: 25px auto; padding: 25px; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .container { max-width: 1100px; margin: 25px auto; padding: 25px; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; z-index: 1; }
         .section { display: none; }
         .active { display: block; }
         
@@ -54,14 +80,18 @@
         .bg-active { background-color: #28a745; }
         .bg-banned { background-color: #dc3545; }
         .not-found { text-align: center; padding: 30px; color: #721c24; background: #f8d7da; border-radius: 5px; font-size: 18px; font-weight: bold; }
-        
         .footer-info { margin-top: 40px; padding: 20px; background: #263238; color: white; border-radius: 5px; text-align: center; }
-        .del-btn { background: #dc3545; padding: 2px 6px; font-size: 11px; margin-top: 5px; }
+        .del-btn { background: #dc3545; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<!-- চলমান টেক্সট -->
+<!-- মূল স্ক্রিনের উপর ভাসমান ও ঘুরতে থাকা কাস্টম টেক্সট -->
+<div class="floating-text-container">
+    <div class="floating-text" id="screenFloatingText">This website made by Nahid</div>
+</div>
+
+<!-- উপরে স্ট্রিপ মার্জি -->
 <div class="marquee-container">
     <marquee scrollamount="5">This website made by Nahid &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; অধ্যাপক আব্দুল মজিদ কলেজ অফিশিয়াল পোর্টাল &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; This website made by Nahid</marquee>
 </div>
@@ -76,16 +106,17 @@
 
 <nav id="navbar">
     <a onclick="showSection('home')">হোম</a>
-    <a onclick="showSection('notice')" id="navNotice">নোটিশ বোর্ড</a>
-    <a onclick="showSection('admission-rules')" id="navRules">ভর্তির নিয়মাবলী</a>
-    <a onclick="showSection('teachers')" id="navTeachers">শিক্ষকবৃন্দ</a>
-    <a onclick="showSection('speech')" id="navSpeech">বাণী</a>
-    <a onclick="showSection('students-list')" id="navStudents">ছাত্র-ছাত্রী</a>
-    <a onclick="showSection('staff')" id="navStaff">স্টাফ</a>
-    <a onclick="showSection('results')" id="navResults">ফলাফল</a>
-    <a onclick="showSection('admission')" id="navAdmission">অনলাইন ভর্তি</a>
+    <a onclick="showSection('notice')">নোটিশ বোর্ড</a>
+    <a onclick="showSection('admission-rules')">ভর্তির নিয়মাবলী</a>
+    <a onclick="showSection('teachers')">শিক্ষকবৃন্দ</a>
+    <a onclick="showSection('speech')">বাণী</a>
+    <a onclick="showSection('students-list')">ছাত্র-ছাত্রী</a>
+    <a onclick="showSection('staff')">স্টাফ</a>
+    <a onclick="showSection('results')">ফলাফল</a>
+    <a onclick="showSection('admission')">অনলাইন ভর্তি</a>
     <a onclick="showSection('student-login')">স্টুডেন্ট লগইন</a>
     <a onclick="showSection('admin-panel')">মডারেটর প্যানেল</a>
+    <a onclick="showSection('user-panel')" style="background: #0275d8;">ইউজার প্যানেল 🎧</a>
     <a onclick="showSection('developer-panel')" style="background: #d9534f;">ডেভেলপার প্যানেল 🔒</a>
 </nav>
 
@@ -120,12 +151,7 @@
     <!-- ২. নোটিশ বোর্ড -->
     <div id="notice" class="section">
         <h2>নোটিশ বোর্ড</h2>
-        <div id="noticeContainer">
-            <div class="notice-card">
-                <h3>২০২৬ শিক্ষাবর্ষের একাদশ শ্রেণির ভর্তি বিজ্ঞপ্তি</h3>
-                <p>অনলাইনে ভর্তি ফরম পূরণ শুরু হয়েছে।</p>
-            </div>
-        </div>
+        <div id="noticeContainer"></div>
     </div>
 
     <!-- ৩. ভর্তির নিয়মাবলী -->
@@ -144,58 +170,43 @@
     <!-- ৪. শিক্ষকবৃন্দ -->
     <div id="teachers" class="section">
         <h2>সম্মানিত শিক্ষক মণ্ডলী</h2>
-        <div id="teachersContainer" class="profile-grid">
-            <div class="profile-card">
-                <img src="https://via.placeholder.com/130x150?text=Teacher" alt="Teacher">
-                <h3>মোহাম্মদ রফিকুল ইসলাম</h3>
-                <p>সহকারী অধ্যাপক (গণিত)</p>
-            </div>
-        </div>
+        <div id="teachersContainer" class="profile-grid"></div>
     </div>
 
     <!-- ৫. বাণী -->
     <div id="speech" class="section">
         <h2>প্রতিষ্ঠাতা ও অধ্যক্ষের বাণী</h2>
-        <div class="notice-card">
-            <h3>প্রতিষ্ঠাতার বাণী</h3>
-            <p>"শিক্ষা জাতির মেরুদণ্ড। সুশিক্ষায় শিক্ষিত হয়ে দেশকে এগিয়ে নিতে হবে।" — অধ্যাপক আব্দুল মজিদ</p>
+        <div id="speechContainer">
+            <div class="notice-card">
+                <h3>প্রতিষ্ঠাতার বাণী</h3>
+                <p>"শিক্ষা জাতির মেরুদণ্ড। সুশিক্ষায় শিক্ষিত হয়ে দেশকে এগিয়ে নিতে হবে।" — অধ্যাপক আব্দুল মজিদ</p>
+            </div>
         </div>
     </div>
 
-    <!-- ৬. ছাত্র-ছাত্রী (গ্রুপভিত্তিক তালিকা) -->
+    <!-- ৬. ছাত্র-ছাত্রী (গ্রুপভিত্তিক) -->
     <div id="students-list" class="section">
         <h2>ছাত্র-ছাত্রী তালিকা (বিভাগভিত্তিক)</h2>
         <h3>বিজ্ঞান বিভাগ</h3>
-        <div id="sciStudentsContainer">কোনো শিক্ষার্থী নেই।</div>
+        <div id="sciStudentsContainer">কোনো সক্রিয় শিক্ষার্থী নেই।</div>
         <hr style="margin:20px 0;">
         <h3>মানবিক বিভাগ</h3>
-        <div id="artsStudentsContainer">কোনো শিক্ষার্থী নেই।</div>
+        <div id="artsStudentsContainer">কোনো সক্রিয় শিক্ষার্থী নেই।</div>
         <hr style="margin:20px 0;">
         <h3>ব্যবসায় শিক্ষা বিভাগ</h3>
-        <div id="comStudentsContainer">কোনো শিক্ষার্থী নেই।</div>
+        <div id="comStudentsContainer">কোনো সক্রিয় শিক্ষার্থী নেই।</div>
     </div>
 
     <!-- ৭. স্টাফ -->
     <div id="staff" class="section">
         <h2>অফিস স্টাফবৃন্দ</h2>
-        <div id="staffContainer" class="profile-grid">
-            <div class="profile-card">
-                <img src="https://via.placeholder.com/130x150?text=Staff" alt="Staff">
-                <h3>মোস্তফা কামাল</h3>
-                <p>অফিস সহকারী</p>
-            </div>
-        </div>
+        <div id="staffContainer" class="profile-grid"></div>
     </div>
 
     <!-- ৮. ফলাফল -->
     <div id="results" class="section">
         <h2>একাডেমিক ফলাফল</h2>
-        <div id="resultsContainer">
-            <div class="notice-card">
-                <h3>সর্বশেষ পাবলিক পরীক্ষার ফলাফল</h3>
-                <p>ফলাফল আপডেট করা হচ্ছে।</p>
-            </div>
-        </div>
+        <div id="resultsContainer"></div>
     </div>
 
     <!-- ৯. অনলাইন ভর্তি ফরম -->
@@ -223,7 +234,7 @@
         </div>
     </div>
 
-    <!-- ১০. স্টুডেন্ট লগইন ও পেমেন্ট/হেল্প প্যানেল -->
+    <!-- ১০. স্টুডেন্ট লগইন -->
     <div id="student-login" class="section">
         <h2>স্টুডেন্ট লগইন প্যানেল</h2>
         <div id="studentLoginBox">
@@ -255,7 +266,6 @@
                 <input type="text" id="searchStudentInput" placeholder="আইডি বা রোল লিখে সার্চ করুন..." onkeyup="searchStudentData()">
             </div>
 
-            <!-- মাসিক ফি ব্যাচ -->
             <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
                 <h4>মাসিক ফি ও পেমেন্ট ম্যানেজমেন্ট</h4>
                 <input type="text" id="feeMonthName" placeholder="মাসের নাম (যেমন: জানুয়ারি ২০২৬)" style="margin-bottom:8px;">
@@ -280,14 +290,26 @@
                 </thead>
                 <tbody id="studentTableBody"></tbody>
             </table>
-
-            <hr style="margin-top:25px;">
-            <h3>শিক্ষার্থীদের সাহায্য বা কমপ্লেইন বক্স (ইউজার প্যানেল)</h3>
-            <div id="moderatorComplaintsBox">কোনো সমস্যা বা কমপ্লেইন নেই।</div>
         </div>
     </div>
 
-    <!-- ১২. ডেভেলপার প্যানেল -->
+    <!-- ১২. ইউজার প্যানেল (সমস্যা সমাধান ও সাপোর্ট) -->
+    <div id="user-panel" class="section">
+        <h2>🎧 ইউজার প্যানেল (সমস্যা সমাধান কেন্দ্র)</h2>
+        <div id="userAuth">
+            <div class="form-group"><label>ইউজার এডমিন পাসওয়ার্ড:</label><input type="password" id="userPassInput" placeholder="পাসওয়ার্ড দিন"></div>
+            <button onclick="loginUserPanel()" style="background:#0275d8;">প্রবেশ করুন</button>
+        </div>
+
+        <div id="userControls" style="display: none;">
+            <div class="success-box">স্বাগতম ইউজার প্যানেলে! শিক্ষার্থীদের জমাকৃত সমস্যা ও ছবি সমাধান করুন।</div>
+            <hr>
+            <h3>শিক্ষার্থীদের জমাকৃত সমস্যা ও রিপোর্ট তালিকা:</h3>
+            <div id="userPanelComplaintsList"></div>
+        </div>
+    </div>
+
+    <!-- ১৩. ডেভেলপার প্যানেল -->
     <div id="developer-panel" class="section">
         <h2>🔒 ডেভেলপার প্যানেল (Super Admin)</h2>
         
@@ -304,43 +326,50 @@
             <div class="success-box">🔓 ডেভেলপার প্যানেল আনলক হয়েছে!</div>
             
             <hr>
-            <h3>১. সেকশন অন / অফ ও ডিলিট কন্ট্রোল</h3>
+            <h3>১. হেড ডিসপ্লেতে এলোমেলোভাবে ঘুরতে থাকা টেক্সট কাস্টমাইজ</h3>
             <div class="form-group">
-                <label><input type="checkbox" id="toggleNotice" checked onchange="toggleSectionState('notice')"> নোটিশ বোর্ড চালু</label>
-                <label><input type="checkbox" id="toggleRules" checked onchange="toggleSectionState('rules')"> ভর্তির নিয়মাবলী চালু</label>
-                <label><input type="checkbox" id="toggleTeachers" checked onchange="toggleSectionState('teachers')"> শিক্ষকবৃন্দ চালু</label>
-                <label><input type="checkbox" id="toggleSpeech" checked onchange="toggleSectionState('speech')"> বাণী চালু</label>
-                <label><input type="checkbox" id="toggleStudents" checked onchange="toggleStudentsState(true)"> ছাত্র-ছাত্রী তালিকা চালু</label>
-                <label><input type="checkbox" id="toggleStaff" checked onchange="toggleSectionState('staff')"> স্টাফ চালু</label>
-                <label><input type="checkbox" id="toggleResults" checked onchange="toggleSectionState('results')"> ফলাফল চালু</label>
-                <label><input type="checkbox" id="toggleAdmission" checked onchange="toggleSectionState('admission')"> অনলাইন ভর্তি চালু</label>
+                <label>ডিসপ্লেতে ঘুরতে থাকা টেক্সট:</label>
+                <input type="text" id="devFloatingTextInput" placeholder="যেমন: This website made by Nahid">
             </div>
 
             <hr>
-            <h3>২. পেমেন্ট বিকাশ নম্বর সেট করুন</h3>
+            <h3>২. সেকশন অন / অফ ও কন্টেন্ট কন্ট্রোল</h3>
             <div class="form-group">
-                <label>বিকাশ মার্চেন্ট/পার্সোনাল নম্বর:</label>
+                <label><input type="checkbox" id="toggleNotice" checked onchange="toggleSec('notice')"> নোটিশ বোর্ড চালু</label>
+                <label><input type="checkbox" id="toggleRules" checked onchange="toggleSec('rules')"> ভর্তির নিয়মাবলী চালু</label>
+                <label><input type="checkbox" id="toggleTeachers" checked onchange="toggleSec('teachers')"> শিক্ষকবৃন্দ চালু</label>
+                <label><input type="checkbox" id="toggleSpeech" checked onchange="toggleSec('speech')"> বাণী চালু</label>
+                <label><input type="checkbox" id="toggleStudents" checked onchange="toggleSec('students')"> ছাত্র-ছাত্রী তালিকা চালু</label>
+                <label><input type="checkbox" id="toggleStaff" checked onchange="toggleSec('staff')"> স্টাফ চালু</label>
+                <label><input type="checkbox" id="toggleResults" checked onchange="toggleSec('results')"> ফলাফল চালু</label>
+                <label><input type="checkbox" id="toggleAdmission" checked onchange="toggleSec('admission')"> অনলাইন ভর্তি চালু</label>
+            </div>
+
+            <hr>
+            <h3>৩. পেমেন্ট বিকাশ নম্বর সেট করুন</h3>
+            <div class="form-group">
+                <label>বিকাশ নম্বর:</label>
                 <input type="text" id="devBkashNumber" value="01713422046 (Personal)">
             </div>
 
             <hr>
-            <h3>৩. মডারেটর ম্যানেজমেন্ট (তৈরি ও ডিলিট)</h3>
+            <h3>৪. মডারেটর অ্যাকাউন্ট ম্যানেজমেন্ট (তৈরি ও ডিলিট)</h3>
             <div class="form-group"><label>নতুন ইউজারনেম:</label><input type="text" id="newModUser"></div>
             <div class="form-group"><label>নতুন পাসওয়ার্ড:</label><input type="text" id="newModPass"></div>
             <button onclick="createModerator()">মডারেটর যোগ করুন</button>
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৪. ছবি ও লোগো আপলোড (গ্যালারি থেকে)</h3>
+            <h3>৫. ছবি ও লোগো আপলোড (গ্যালারি থেকে)</h3>
             <div class="form-group"><label>লোগো ছবি:</label><input type="file" id="uploadLogo" accept="image/*"></div>
             <div class="form-group"><label>প্রতিষ্ঠাতার ছবি:</label><input type="file" id="uploadFounder" accept="image/*"></div>
             <div class="form-group"><label>অধ্যক্ষের ছবি:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
 
             <hr>
-            <h3>৫. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
+            <h3>৬. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
             <div class="form-group"><label>নাম / শিরোনাম:</label><input type="text" id="devItemName"></div>
             <div class="form-group"><label>পদবী / বিবরণ:</label><input type="text" id="devItemDesc"></div>
-            <div class="form-group"><label>ছবি (প্রযোজ্য ক্ষেত্রে):</label><input type="file" id="devItemImg" accept="image/*"></div>
+            <div class="form-group"><label>ছবি:</label><input type="file" id="devItemImg" accept="image/*"></div>
             <div class="form-group">
                 <label>কোথায় যুক্ত করবেন?</label>
                 <select id="devItemType">
@@ -352,16 +381,15 @@
             <button onclick="addDevDynamicItem()">যুক্ত করুন</button>
 
             <hr>
-            <h3>৬. ফুটার কন্টাক্ট ইনফরমেশন কাস্টমাইজ</h3>
-            <div class="form-group"><label>ফুটার কন্টাক্ট টেক্সট (ফোন, জিমেইল বা ঠিকানা):</label><textarea id="devFooterText" rows="2">অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা। ফোন: 01713422046</textarea></div>
+            <h3>৭. ফুটার কন্টাক্ট ইনফরমেশন কাস্টমাইজ</h3>
+            <div class="form-group"><label>ফুটার কন্টাক্ট টেক্সট:</label><textarea id="devFooterText" rows="2">অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা। ফোন: 01713422046</textarea></div>
 
             <hr style="margin-top:20px;">
-            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সংরক্ষণ করুন</button>
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সেভ করুন</button>
         </div>
     </div>
 </div>
 
-<!-- কাস্টম ফুটার কন্টাক্ট ইনফরমেশন এরিয়া -->
 <div class="container" style="padding: 10px; background: transparent; box-shadow: none;">
     <div id="customFooterArea" class="footer-info">
         অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা। ফোন: 01713422046
@@ -370,38 +398,48 @@
 
 <script>
     const SECRET_DEV_PIN = "998877";
-    let currentYear = new Date().getFullYear();
-    let serialCounter = 1;
-    let studentsDatabase = [];
-    let moderatorsDatabase = [{user: "admin", pass: "1234"}];
-    let activeRoleCounter = 1;
-    let devBkash = "01713422046 (Personal)";
-    let complaintsList = []; // ইউজার কমপ্লেইন বা হেল্প বক্স ডেটা
+    const SECRET_USER_PIN = "123456";
 
-    let sectionStates = { notice: true, rules: true, teachers: true, speech: true, students: true, staff: true, results: true, admission: true };
+    // লোকাল স্টোরেজ থেকে পারমানেন্ট ডেটা লোড
+    let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
+    let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
+    let complaintsList = JSON.parse(localStorage.getItem('complaintsDB')) || [];
+    let dynamicItems = JSON.parse(localStorage.getItem('dynamicItemsDB')) || [];
+    let devBkash = localStorage.getItem('devBkash') || "01713422046 (Personal)";
+    let floatingTextVal = localStorage.getItem('floatingTextVal') || "This website made by Nahid";
+    let activeRoleCounter = parseInt(localStorage.getItem('activeRoleCounter')) || 1;
+    let serialCounter = parseInt(localStorage.getItem('serialCounter')) || 1;
+
+    // প্রাথমিক লোড ইনিশিয়ালাইজেশন
+    window.onload = function() {
+        document.getElementById('screenFloatingText').innerText = floatingTextVal;
+        document.getElementById('devFloatingTextInput').value = floatingTextVal;
+        renderStudentTable();
+        renderPublicStudentsByGroup();
+        renderDynamicItems();
+    };
+
+    function saveDB() {
+        localStorage.setItem('studentsDB', JSON.stringify(studentsDatabase));
+        localStorage.setItem('moderatorsDB', JSON.stringify(moderatorsDatabase));
+        localStorage.setItem('complaintsDB', JSON.stringify(complaintsList));
+        localStorage.setItem('dynamicItemsDB', JSON.stringify(dynamicItems));
+        localStorage.setItem('devBkash', devBkash);
+        localStorage.setItem('floatingTextVal', floatingTextVal);
+        localStorage.setItem('activeRoleCounter', activeRoleCounter);
+        localStorage.setItem('serialCounter', serialCounter);
+    }
 
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
 
-    function toggleSectionState(sec) {
-        if(sec === 'notice') sectionStates.notice = document.getElementById('toggleNotice').checked;
-        if(sec === 'rules') sectionStates.rules = document.getElementById('toggleRules').checked;
-        if(sec === 'teachers') sectionStates.teachers = document.getElementById('toggleTeachers').checked;
-        if(sec === 'speech') sectionStates.speech = document.getElementById('toggleSpeech').checked;
-        if(sec === 'staff') sectionStates.staff = document.getElementById('toggleStaff').checked;
-        if(sec === 'results') sectionStates.results = document.getElementById('toggleResults').checked;
-        if(sec === 'admission') sectionStates.admission = document.getElementById('toggleAdmission').checked;
-
-        // চেক করে অফ থাকলে নট ফাউন্ড দেখানো
-        if(sec === 'notice' && !sectionStates.notice) document.getElementById('notice').innerHTML = `<h2>নোটিশ বোর্ড</h2><div class="not-found">Not Found</div>`;
-        if(sec === 'admission' && !sectionStates.admission) document.getElementById('admissionWrapper').innerHTML = `<div class="not-found">Not Found</div>`;
-    }
-
-    function toggleStudentsState(state) {
-        sectionStates.students = state;
-        if(!state) document.getElementById('students-list').innerHTML = `<h2>ছাত্র-ছাত্রী তালিকা</h2><div class="not-found">Not Found</div>`;
+    function toggleSec(sec) {
+        let el = document.getElementById(sec);
+        if(el) {
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
     }
 
     function loginDeveloper() {
@@ -414,13 +452,24 @@
         }
     }
 
+    function loginUserPanel() {
+        if(document.getElementById('userPassInput').value === SECRET_USER_PIN) {
+            document.getElementById('userAuth').style.display = 'none';
+            document.getElementById('userControls').style.display = 'block';
+            renderUserPanelComplaints();
+        } else {
+            alert("❌ ভুল ইউজার পাসওয়ার্ড!");
+        }
+    }
+
     function createModerator() {
         let u = document.getElementById('newModUser').value;
         let p = document.getElementById('newModPass').value;
         if(u && p) {
             moderatorsDatabase.push({user: u, pass: p});
+            saveDB();
             renderModeratorsList();
-            alert("মডারেটর যুক্ত হয়েছে!");
+            alert("মডারেটর সফলভাবে তৈরি হয়েছে!");
             document.getElementById('newModUser').value = '';
             document.getElementById('newModPass').value = '';
         }
@@ -431,7 +480,7 @@
         ul.innerHTML = '';
         moderatorsDatabase.forEach((mod, index) => {
             ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> 
-                ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}
+                ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveDB(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}
             </li>`;
         });
     }
@@ -439,6 +488,7 @@
     // ছাত্র ভর্তি
     function handleAdmission(e) {
         e.preventDefault();
+        let currentYear = new Date().getFullYear();
         let formattedSerial = String(serialCounter).padStart(3, '0');
         let generatedStudentId = `${currentYear}${formattedSerial}`;
         
@@ -453,21 +503,22 @@
             gpa: document.getElementById('sscGpa').value,
             status: 'Inactive',
             assignedRoll: null,
-            feeInfo: "বকেয়া নেই (৫০০৳ বকেয়া থাকতে পারে)",
+            feeInfo: "বকেয়া নেই",
             paymentStatus: "পেমেন্ট করা হয়নি",
             trxInfo: ""
         };
 
         studentsDatabase.push(studentData);
+        serialCounter++;
+        saveDB();
         renderStudentTable();
         renderPublicStudentsByGroup();
 
         document.getElementById('admissionResult').innerHTML = `
             <div class="warning-box">
-                🎉 ভর্তি আবেদন সফল! আইডি: <b>${generatedStudentId}</b> (স্ট্যাটাস: ইনঅ্যাক্টিভ)
+                🎉 আবেদন সফল! স্টুডেন্ট আইডি: <b>${generatedStudentId}</b> (স্ট্যাটাস: ইনঅ্যাক্টিভ)
             </div>
         `;
-        serialCounter++;
         document.getElementById('admissionForm').reset();
     }
 
@@ -489,9 +540,10 @@
                 <td><b>ফি:</b> ${std.feeInfo}<br><b>পেমেন্ট:</b> ${std.paymentStatus}<br><small>${std.trxInfo}</small></td>
                 <td>
                     <span class="status-badge ${badgeClass}">${std.status}</span><br>
-                    <button onclick="saveStudentEdit(${index})" style="background:#00796b; padding:2px 5px; font-size:10px;">এডিট সেভ</button><br>
+                    <button onclick="saveStudentEdit(${index})" style="background:#00796b; padding:2px 5px; font-size:10px;">এডিট সেভ</button>
                     <button class="btn-act" onclick="changeStatus(${index}, 'Active')">Active</button>
                     <button onclick="verifyPayment(${index})" style="background:#17a2b8; padding:2px 5px; font-size:10px;">পেমেন্ট Accept</button>
+                    <button onclick="deleteStudent(${index})" class="del-btn" style="padding:2px 5px; font-size:10px;">ডিলিট</button>
                 </td>
             </tr>`;
         });
@@ -499,7 +551,8 @@
 
     function saveStudentEdit(index) {
         studentsDatabase[index].name = document.getElementById(`editName_${index}`).value;
-        alert("তথ্য আপডেট করা হয়েছে!");
+        saveDB();
+        alert("স্টুডেন্ট তথ্য সংরক্ষিত হয়েছে!");
         renderStudentTable();
         renderPublicStudentsByGroup();
     }
@@ -509,14 +562,25 @@
             studentsDatabase[index].assignedRoll = activeRoleCounter++;
         }
         studentsDatabase[index].status = newStatus;
+        saveDB();
         renderStudentTable();
         renderPublicStudentsByGroup();
     }
 
+    function deleteStudent(index) {
+        if(confirm("আপনি কি নিশ্চিতভাবে এই শিক্ষার্থীকে ডিলিট করতে চান?")) {
+            studentsDatabase.splice(index, 1);
+            saveDB();
+            renderStudentTable();
+            renderPublicStudentsByGroup();
+        }
+    }
+
     function verifyPayment(index) {
         studentsDatabase[index].paymentStatus = "পেমেন্ট সফল ও ভেরিফাইড";
+        saveDB();
         renderStudentTable();
-        alert("পেমেন্ট একসেপ্ট করা হয়েছে!");
+        alert("পেমেন্ট সফলভাবে গ্রহণ করা হয়েছে!");
     }
 
     function searchStudentData() {
@@ -533,14 +597,12 @@
                 s.feeInfo = `${month}: ${amount}৳ বকেয়া`;
                 s.paymentStatus = "পেমেন্ট বকেয়া রয়েছে";
             });
+            saveDB();
             renderStudentTable();
-            alert("সকল শিক্ষার্থীর ফি নির্ধারণ করা হয়েছে!");
-        } else {
-            alert("মাসের নাম ও পরিমাণ লিখুন!");
+            alert("সকল শিক্ষার্থীর ফি আপডেট হয়েছে!");
         }
     }
 
-    // বিভাগভিত্তিক ছাত্র-ছাত্রী তালিকা
     function renderPublicStudentsByGroup() {
         let sci = document.getElementById('sciStudentsContainer');
         let arts = document.getElementById('artsStudentsContainer');
@@ -559,14 +621,11 @@
 
     function makeStudentTableHTML(list) {
         let html = `<table><thead><tr><th>রোল</th><th>নাম</th><th>আইডি</th></tr></thead><tbody>`;
-        list.forEach(s => {
-            html += `<tr><td>${s.assignedRoll}</td><td>${s.name}</td><td>${s.id}</td></tr>`;
-        });
+        list.forEach(s => { html += `<tr><td>${s.assignedRoll}</td><td>${s.name}</td><td>${s.id}</td></tr>`; });
         html += `</tbody></table>`;
         return html;
     }
 
-    // স্টুডেন্ট লগইন ও পেমেন্ট সাবমিট
     function handleStudentLogin(e) {
         e.preventDefault();
         let inputId = document.getElementById('loginStudentId').value.trim();
@@ -595,17 +654,17 @@
                 
                 <div style="background:#fff; padding:10px; border-radius:5px; margin-top:10px; color:#333;">
                     <h4>বিকাশ পেমেন্ট করুন</h4>
-                    <p>দয়া করে এই বিকাশ নম্বরে টাকা পাঠান: <b>${devBkash}</b></p>
-                    <input type="text" id="paySenderNo" placeholder="আপনার বিকাশ নম্বর (যেখান থেকে পাঠিয়েছেন)" style="margin-bottom:8px;">
+                    <p>দয়া করে এই নম্বর পেমেন্ট করুন: <b>${devBkash}</b></p>
+                    <input type="text" id="paySenderNo" placeholder="আপনার বিকাশ নম্বর" style="margin-bottom:8px;">
                     <input type="text" id="payTrxId" placeholder="ট্রানজেকশন আইডি (TrxID)" style="margin-bottom:8px;">
                     <button onclick="submitStudentPayment('${student.id}')" style="background:#28a745;">পেমেন্ট তথ্য সাবমিট করুন</button>
                 </div>
 
                 <hr style="margin-top:15px;">
-                <h4>কোনো সমস্যা বা সাহায্য প্রয়োজন? (কমপ্লেইন বক্স)</h4>
-                <textarea id="studentProblemText" placeholder="আপনার সমস্যা এখানে লিখুন..." rows="2" style="margin-bottom:8px;"></textarea>
+                <h4>কোনো সমস্যা থাকলে মেসেজ বা ছবি পাঠান (ইউজার প্যানেলে যাবে)</h4>
+                <textarea id="studentProblemText" placeholder="আপনার সমস্যাটি এখানে বিস্তারিত লিখুন..." rows="2" style="margin-bottom:8px;"></textarea>
                 <input type="file" id="studentProblemImg" accept="image/*" style="margin-bottom:8px;">
-                <button onclick="submitStudentComplaint('${student.id}')" style="background:#d9534f;">সমস্যা সাবমিট করুন</button>
+                <button onclick="submitStudentComplaint('${student.id}')" style="background:#0275d8;">সমস্যা সাবমিট করুন</button>
             </div>
         `;
     }
@@ -617,36 +676,49 @@
         if(no && trx) {
             s.paymentStatus = "পেমেন্ট জমা হয়েছে (যাচাই চলছে)";
             s.trxInfo = `নম্বর: ${no}, TrxID: ${trx}`;
-            alert("পেমেন্ট তথ্য সফলভাবে সাবমিট হয়েছে! মডারেটর যাচাই করবেন।");
+            saveDB();
+            alert("পেমেন্ট তথ্য সাবমিট করা হয়েছে!");
             renderStudentTable();
-        } else {
-            alert("নম্বর ও ট্রানজেকশন আইডি দিন!");
         }
     }
 
     function submitStudentComplaint(stdId) {
         let text = document.getElementById('studentProblemText').value;
         let imgFile = document.getElementById('studentProblemImg').files[0];
-        if(text || imgFile) {
-            let compObj = { stdId: stdId, text: text, img: imgFile ? imgFile.name : "ছবি নেই" };
+        
+        let processComplaint = function(imgData) {
+            let compObj = { id: Date.now(), stdId: stdId, text: text, img: imgData || "", reply: "" };
             complaintsList.push(compObj);
-            renderComplaints();
-            alert("আপনার সমস্যাটি মডারেটর প্যানেলে পাঠানো হয়েছে!");
+            saveDB();
+            alert("আপনার সমস্যাটি ইউজার প্যানেলে পাঠানো হয়েছে!");
             document.getElementById('studentProblemText').value = '';
-        } else {
-            alert("কিছু লিখে বা ছবি দিয়ে সাবমিট করুন!");
+        };
+
+        if(imgFile) {
+            let reader = new FileReader();
+            reader.onload = e => processComplaint(e.target.result);
+            reader.readAsDataURL(imgFile);
+        } else if(text) {
+            processComplaint("");
         }
     }
 
-    function renderComplaints() {
-        let box = document.getElementById('moderatorComplaintsBox');
+    function renderUserPanelComplaints() {
+        let box = document.getElementById('userPanelComplaintsList');
         if(complaintsList.length === 0) {
-            box.innerHTML = "কোনো সমস্যা নেই।";
+            box.innerHTML = "কোনো সমস্যা বা সাপোর্ট রিকোয়েস্ট নেই।";
             return;
         }
         box.innerHTML = "";
-        complaintsList.forEach((c, i) => {
-            box.innerHTML += `<div class="warning-box">স্টুডেন্ট আইডি: <b>${c.stdId}</b><br>সমস্যা: ${c.text}<br>ফাইল: ${c.img} <button onclick="complaintsList.splice(${i},1); renderComplaints();" class="del-btn">সমাধান হয়েছে (ডিলিট)</button></div>`;
+        complaintsList.forEach((c, index) => {
+            box.innerHTML += `
+                <div class="warning-box">
+                    স্টুডেন্ট আইডি: <b>${c.stdId}</b><br>
+                    <b>সমস্যা:</b> ${c.text}<br>
+                    ${c.img ? `<img src="${c.img}" style="max-width:150px; display:block; margin:5px 0;">` : ''}
+                    <button onclick="complaintsList.splice(${index},1); saveDB(); renderUserPanelComplaints();" class="del-btn">সমস্যার সমাধান হয়েছে (ডিলিট)</button>
+                </div>
+            `;
         });
     }
 
@@ -658,44 +730,65 @@
             document.getElementById('adminAuth').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
             renderStudentTable();
-            renderComplaints();
         } else {
-            alert("❌ ভুল ইউজারনেম বা পাসওয়ার্ড!");
+            alert("❌ ভুল মডারেটর ইউজারনেম বা পাসওয়ার্ড!");
         }
     }
 
-    // ডেভেলপার ডাইনামিক আইটেম (শিক্ষক, স্টাফ, ফলাফল) যুক্ত করা
     function addDevDynamicItem() {
         let name = document.getElementById('devItemName').value;
         let desc = document.getElementById('devItemDesc').value;
         let type = document.getElementById('devItemType').value;
         let file = document.getElementById('devItemImg').files[0];
 
-        if(name) {
-            if(type === 'result') {
-                document.getElementById('resultsContainer').innerHTML += `<div class="notice-card"><h3>${name}</h3><p>${desc}</p></div>`;
-                alert("ফলাফল সফলভাবে যুক্ত হয়েছে!");
-            } else if(file) {
-                let r = new FileReader();
-                r.onload = function(e) {
-                    let html = `<div class="profile-card"><img src="${e.target.result}" alt="Img"><h3>${name}</h3><p>${desc}</p></div>`;
-                    if(type === 'teacher') document.getElementById('teachersContainer').innerHTML += html;
-                    if(type === 'staff') document.getElementById('staffContainer').innerHTML += html;
-                    alert("সফলভাবে যুক্ত হয়েছে!");
-                }
-                r.readAsDataURL(file);
-            } else {
-                alert("নাম ও ছবি দিন!");
-            }
+        let addItem = function(imgUrl) {
+            dynamicItems.push({ id: Date.now(), name, desc, type, img: imgUrl || "" });
+            saveDB();
+            renderDynamicItems();
+            alert("সফলভাবে যুক্ত হয়েছে!");
+            document.getElementById('devItemName').value = '';
+            document.getElementById('devItemDesc').value = '';
+        };
+
+        if(file) {
+            let r = new FileReader();
+            r.onload = e => addItem(e.target.result);
+            r.readAsDataURL(file);
+        } else if(name) {
+            addItem("");
         }
+    }
+
+    function renderDynamicItems() {
+        let tc = document.getElementById('teachersContainer');
+        let sc = document.getElementById('staffContainer');
+        let rc = document.getElementById('resultsContainer');
+
+        tc.innerHTML = ''; sc.innerHTML = ''; rc.innerHTML = '';
+
+        dynamicItems.forEach((item, index) => {
+            let cardHTML = `
+                <div class="profile-card">
+                    ${item.img ? `<img src="${item.img}">` : ''}
+                    <h3>${item.name}</h3>
+                    <p>${item.desc}</p>
+                    <button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button>
+                </div>
+            `;
+            if(item.type === 'teacher') tc.innerHTML += cardHTML;
+            if(item.type === 'staff') sc.innerHTML += cardHTML;
+            if(item.type === 'result') rc.innerHTML += `<div class="notice-card"><h3>${item.name}</h3><p>${item.desc}</p><button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button></div>`;
+        });
     }
 
     function saveAllDevSettings() {
         devBkash = document.getElementById('devBkashNumber').value;
+        floatingTextVal = document.getElementById('devFloatingTextInput').value;
+        document.getElementById('screenFloatingText').innerText = floatingTextVal;
+        
         let footerTxt = document.getElementById('devFooterText').value;
         document.getElementById('customFooterArea').innerText = footerTxt;
 
-        // ফাইল ছবি হ্যান্ডেলিং
         let logo = document.getElementById('uploadLogo').files[0];
         if(logo) {
             let r = new FileReader();
@@ -717,9 +810,10 @@
             r.readAsDataURL(principal);
         }
 
-        alert("সকল পরিবর্তন সংরক্ষিত হয়েছে!");
+        saveDB();
+        alert("সকল কাস্টম সেটিং ও পারমানেন্ট ডাটা সেভ হয়েছে!");
     }
 </script>
 
 </body>
-    </html>
+                           </html>
