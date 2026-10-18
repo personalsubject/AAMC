@@ -235,4 +235,411 @@
     <div id="admin-panel" class="section">
         <h2>মডারেটর / এডমিন কন্ট্রোল প্যানেল</h2>
         <div id="adminAuth">
-            <div class="form-group"><label
+            <div class="form-group"><label>ইউজারনেম:</label><input type="text" id="adminUser"></div>
+            <div class="form-group"><label>পাসওয়ার্ড:</label><input type="password" id="adminPass"></div>
+            <button loginAdmin()>লগইন</button>
+            <button onclick="loginAdmin()">লগইন করুন</button>
+        </div>
+
+        <div id="dashboard" style="display: none;">
+            <p style="color: green; font-weight: bold;">স্বাগতম! মডারেটর ড্যাশবোর্ড</p>
+            
+            <!-- সার্চ অপশন -->
+            <div class="form-group" style="margin-top:15px; background: #e0f2f1; padding: 10px; border-radius: 5px;">
+                <label>🔍 শিক্ষার্থী খুঁজুন (আইডি বা রোল দিয়ে):</label>
+                <input type="text" id="searchStudentInput" placeholder="আইডি বা রোল লিখে সার্চ করুন..." onkeyup="searchStudentData()">
+            </div>
+
+            <!-- মাসিক পেমেন্ট ব্যাচ কন্ট্রোল -->
+            <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                <h4>অনলাইন স্টুডেন্ট পেমেন্ট ও মাসিক বেতন ম্যানেজমেন্ট</h4>
+                <input type="text" id="feeMonthName" placeholder="মাসের নাম (যেমন: জানুয়ারি ২০২৬)" style="margin-bottom:8px;">
+                <input type="number" id="feeAmount" placeholder="বেতনের পরিমাণ (টাকা)" style="margin-bottom:8px;">
+                <button onclick="applyMonthlyFeeToAll()" style="background:#ffc107; color:#000;">সকল শিক্ষার্থীকে ফি নির্ধারণ করুন</button>
+            </div>
+
+            <hr>
+            <h3>শিক্ষার্থীদের তথ্য তালিকা ও এডিটিং</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>আইডি</th>
+                        <th>নাম</th>
+                        <th>পিতা</th>
+                        <th>মাতা</th>
+                        <th>মোবাইল</th>
+                        <th>গ্রুপ</th>
+                        <th>রোল/জিপিএ</th>
+                        <th>মাসিক ফি / পেমেন্ট</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>অ্যাকশন (এডিট/একটিভ)</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ১২. ডেভেলপার প্যানেল -->
+    <div id="developer-panel" class="section">
+        <h2>🔒 ডেভেলপার প্যানেল (Super Admin)</h2>
+        
+        <div id="devAuth">
+            <div class="warning-box">নিরাপত্তার জন্য ডেভেলপার সিক্রেট পিন কোড লিখুন।</div>
+            <div class="form-group" style="margin-top:15px;">
+                <label>সিক্রেট পিন:</label>
+                <input type="password" id="devPassInput" placeholder="পিন কোড দিন">
+            </div>
+            <button onclick="loginDeveloper()" style="background: #d9534f;">আনলক করুন</button>
+        </div>
+
+        <div id="devControls" style="display: none;">
+            <div class="success-box">🔓 ডেভেলপার প্যানেল আনলক হয়েছে!</div>
+            
+            <hr>
+            <h3>১. সেকশন অন / অফ (On/Off) কন্ট্রোল</h3>
+            <div class="form-group">
+                <label><input type="checkbox" id="toggleNotice" checked onchange="toggleSectionState('notice')"> নোটিশ বোর্ড চালু রাখুন</label>
+                <label><input type="checkbox" id="toggleRules" checked onchange="toggleSectionState('rules')"> ভর্তির নিয়মাবলী চালু রাখুন</label>
+                <label><input type="checkbox" id="toggleAdmission" checked onchange="toggleSectionState('admission')"> অনলাইন ভর্তি চালু রাখুন</label>
+            </div>
+
+            <hr>
+            <h3>২. মডারেটর অ্যাকাউন্ট তৈরি ও ডিলিট</h3>
+            <div class="form-group"><label>নতুন ইউজারনেম:</label><input type="text" id="newModUser"></div>
+            <div class="form-group"><label>নতুন পাসওয়ার্ড:</label><input type="text" id="newModPass"></div>
+            <button onclick="createModerator()">মডারেটর যোগ করুন</button>
+            <ul id="activeModsList" style="margin-top:10px;"></ul>
+
+            <hr>
+            <h3>৩. কলেজ ইমেইল ও জিমেইল পরিবর্তন</h3>
+            <div class="form-group"><label>অফিশিয়াল ইমেইল:</label><input type="text" id="devEmail" value="aamcollege@gmail.com"></div>
+            <div class="form-group"><label>অফিশিয়াল জিমেইল:</label><input type="text" id="devGmail" value="aamcollege.official@gmail.com"></div>
+
+            <hr>
+            <h3>৪. ছবি ও লোগো গ্যালারি থেকে আপলোড</h3>
+            <div class="form-group"><label>লোগো ছবি:</label><input type="file" id="uploadLogo" accept="image/*"></div>
+            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি:</label><input type="file" id="uploadFounder" accept="image/*"></div>
+            <div class="form-group"><label>অধ্যক্ষের ছবি:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
+
+            <hr>
+            <h3>৫. শিক্ষক ও স্টাফ ছবিসহ যুক্ত/ডিলিট</h3>
+            <div class="form-group"><label>নাম:</label><input type="text" id="devStaffName"></div>
+            <div class="form-group"><label>পদবী:</label><input type="text" id="devStaffRole"></div>
+            <div class="form-group"><label>ছবি:</label><input type="file" id="devStaffImg" accept="image/*"></div>
+            <div class="form-group">
+                <label>কোথায় যুক্ত করবেন?</label>
+                <select id="devStaffType">
+                    <option value="teacher">শিক্ষকবৃন্দ</option>
+                    <option value="staff">স্টাফ</option>
+                </select>
+            </div>
+            <button onclick="addStaffOrTeacher()">যুক্ত করুন</button>
+
+            <hr>
+            <h3>৬. হোম পেজের বিবরণ ও বাণী পরিবর্তন</h3>
+            <div class="form-group"><label>স্বাগতম বাণী:</label><textarea id="devWelcomeSpeech" rows="2"></textarea></div>
+            <div class="form-group"><label>কলেজের বিবরণ:</label><textarea id="devHistoryText" rows="3"></textarea></div>
+
+            <hr>
+            <h3>৭. ভর্তির নিয়মাবলী ও নোটিশ কাস্টমাইজ</h3>
+            <div class="form-group"><label>ভর্তির নিয়মাবলী টেক্সট:</label><textarea id="devRulesInput" rows="3"></textarea></div>
+            <div class="form-group"><label>নোটিশ শিরোনাম:</label><input type="text" id="devNoticeTitle"></div>
+            <div class="form-group"><label>নোটিশ বিস্তারিত:</label><textarea id="devNoticeBody" rows="2"></textarea></div>
+            <button onclick="addNewNoticeFromDev()">নোটিশ পাবলিশ</button>
+
+            <hr style="margin-top:20px;">
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সংরক্ষণ করুন</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SECRET_DEV_PIN = "998877";
+    let currentYear = new Date().getFullYear();
+    let serialCounter = 1;
+    let studentsDatabase = [];
+    let moderatorsDatabase = [{user: "admin", pass: "1234"}];
+    let activeRoleCounter = 1;
+
+    // সেকশন অন/অফ স্টেট
+    let sectionStates = { notice: true, rules: true, admission: true };
+
+    function showSection(id) {
+        // সেকশন অফ থাকলে চেক
+        if(id === 'notice' && !sectionStates.notice) {
+            document.getElementById('notice').innerHTML = `<h2>নোটিশ বোর্ড</h2><div class="not-found">No Notice Found</div>`;
+        }
+        if(id === 'admission-rules' && !sectionStates.rules) {
+            document.getElementById('admission-rules').innerHTML = `<h2>ভর্তির নিয়মাবলী</h2><div class="not-found">Not Found</div>`;
+        }
+        if(id === 'admission' && !sectionStates.admission) {
+            document.getElementById('admissionWrapper').innerHTML = `<div class="not-found">Not Found (Online Admission is closed)</div>`;
+        }
+
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function toggleSectionState(sec) {
+        if(sec === 'notice') sectionStates.notice = document.getElementById('toggleNotice').checked;
+        if(sec === 'rules') sectionStates.rules = document.getElementById('toggleRules').checked;
+        if(sec === 'admission') sectionStates.admission = document.getElementById('toggleAdmission').checked;
+    }
+
+    function loginDeveloper() {
+        if(document.getElementById('devPassInput').value === SECRET_DEV_PIN) {
+            document.getElementById('devAuth').style.display = 'none';
+            document.getElementById('devControls').style.display = 'block';
+            renderModeratorsList();
+        } else {
+            alert("❌ ভুল পিন কোড!");
+        }
+    }
+
+    function createModerator() {
+        let u = document.getElementById('newModUser').value;
+        let p = document.getElementById('newModPass').value;
+        if(u && p) {
+            moderatorsDatabase.push({user: u, pass: p});
+            renderModeratorsList();
+            alert("মডারেটর সফলভাবে যুক্ত হয়েছে!");
+            document.getElementById('newModUser').value = '';
+            document.getElementById('newModPass').value = '';
+        }
+    }
+
+    function renderModeratorsList() {
+        let ul = document.getElementById('activeModsList');
+        ul.innerHTML = '';
+        moderatorsDatabase.forEach((mod, index) => {
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> 
+                ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); renderModeratorsList();" style="background:red; padding:2px 6px; font-size:11px;">ডিলিট</button>` : ''}
+            </li>`;
+        });
+    }
+
+    // ছাত্র-ছাত্রী ভর্তি
+    function handleAdmission(e) {
+        e.preventDefault();
+        let formattedSerial = String(serialCounter).padStart(3, '0');
+        let generatedStudentId = `${currentYear}${formattedSerial}`;
+        
+        let studentData = {
+            id: generatedStudentId,
+            name: document.getElementById('studentNameBn').value,
+            father: document.getElementById('fatherNameBn').value,
+            mother: document.getElementById('motherNameBn').value,
+            mobile: document.getElementById('mobile').value,
+            group: document.getElementById('group').value,
+            roll: document.getElementById('sscRoll').value,
+            gpa: document.getElementById('sscGpa').value,
+            status: 'Inactive',
+            assignedRoll: null,
+            feeInfo: "বকেয়া নেই"
+        };
+
+        studentsDatabase.push(studentData);
+        renderStudentTable();
+        renderPublicStudents();
+
+        document.getElementById('admissionResult').innerHTML = `
+            <div class="warning-box">
+                🎉 ভর্তি আবেদন সফল! আপনার আইডি: <b>${generatedStudentId}</b> (স্ট্যাটাস: ইনঅ্যাক্টিভ)
+            </div>
+        `;
+        serialCounter++;
+        document.getElementById('admissionForm').reset();
+    }
+
+    function renderStudentTable(dataToRender = studentsDatabase) {
+        let tbody = document.getElementById('studentTableBody');
+        tbody.innerHTML = '';
+        
+        dataToRender.forEach((std) => {
+            let index = studentsDatabase.indexOf(std);
+            let badgeClass = std.status === 'Active' ? 'bg-active' : (std.status === 'Banned' ? 'bg-banned' : 'bg-inactive');
+            
+            tbody.innerHTML += `<tr>
+                <td><b>${std.id}</b></td>
+                <td><input type="text" value="${std.name}" id="editName_${index}" style="width:100px;"></td>
+                <td><input type="text" value="${std.father}" id="editFather_${index}" style="width:90px;"></td>
+                <td><input type="text" value="${std.mother}" id="editMother_${index}" style="width:90px;"></td>
+                <td>${std.mobile}</td>
+                <td>${std.group}</td>
+                <td>রোল: ${std.assignedRoll || '-'}<br>জিপিএ: ${std.gpa}</td>
+                <td>${std.feeInfo}</td>
+                <td><span class="status-badge ${badgeClass}">${std.status}</span></td>
+                <td>
+                    <button onclick="saveStudentEdit(${index})" style="background:#00796b; padding:3px 6px; font-size:10px;">সেভ</button>
+                    <button class="btn-act" onclick="changeStatus(${index}, 'Active')">Active</button>
+                    <button class="btn-ban" onclick="changeStatus(${index}, 'Banned')">Ban</button>
+                </td>
+            </tr>`;
+        });
+    }
+
+    function saveStudentEdit(index) {
+        studentsDatabase[index].name = document.getElementById(`editName_${index}`).value;
+        studentsDatabase[index].father = document.getElementById(`editFather_${index}`).value;
+        studentsDatabase[index].mother = document.getElementById(`editMother_${index}`).value;
+        alert("শিক্ষার্থীর তথ্য আপডেট করা হয়েছে!");
+        renderStudentTable();
+        renderPublicStudents();
+    }
+
+    function changeStatus(index, newStatus) {
+        if(newStatus === 'Active' && !studentsDatabase[index].assignedRoll) {
+            studentsDatabase[index].assignedRoll = activeRoleCounter++;
+        }
+        studentsDatabase[index].status = newStatus;
+        renderStudentTable();
+        renderPublicStudents();
+    }
+
+    // সার্চ অপশন (মডারেটর প্যানেল)
+    function searchStudentData() {
+        let query = document.getElementById('searchStudentInput').value.toLowerCase();
+        let filtered = studentsDatabase.filter(s => s.id.toLowerCase().includes(query) || (s.assignedRoll && String(s.assignedRoll).includes(query)));
+        renderStudentTable(filtered);
+    }
+
+    // মাসিক ফি নির্ধারণ
+    function applyMonthlyFeeToAll() {
+        let month = document.getElementById('feeMonthName').value;
+        let amount = document.getElementById('feeAmount').value;
+        if(month && amount) {
+            studentsDatabase.forEach(s => {
+                s.feeInfo = `${month}: ${amount}৳ (বকেয়া)`;
+            });
+            renderStudentTable();
+            alert("সকল শিক্ষার্থীর জন্য মাসিক ফি নির্ধারণ করা হয়েছে!");
+        } else {
+            alert("মাসের নাম ও পরিমাণ লিখুন!");
+        }
+    }
+
+    function renderPublicStudents() {
+        let container = document.getElementById('publicStudentsContainer');
+        let activeStudents = studentsDatabase.filter(s => s.status === 'Active');
+        if(activeStudents.length === 0) {
+            container.innerHTML = "কোনো সক্রিয় শিক্ষার্থী নেই।";
+            return;
+        }
+        container.innerHTML = `<table><thead><tr><th>রোল</th><th>নাম</th><th>গ্রুপ</th></tr></thead><tbody id="pubTbody"></tbody></table>`;
+        let tb = document.getElementById('pubTbody');
+        activeStudents.forEach(s => {
+            tb.innerHTML += `<tr><td>${s.assignedRoll}</td><td>${s.name}</td><td>${s.group}</td></tr>`;
+        });
+    }
+
+    function handleStudentLogin(e) {
+        e.preventDefault();
+        let inputId = document.getElementById('loginStudentId').value.trim();
+        let student = studentsDatabase.find(s => s.id === inputId);
+        let profileDiv = document.getElementById('studentProfile');
+
+        if(!student || student.status !== 'Active') {
+            profileDiv.innerHTML = `<div class="danger-box">❌ আইডি সঠিক নয় অথবা এখনো ইনঅ্যাক্টিভ রয়েছে!</div>`;
+            return;
+        }
+
+        profileDiv.innerHTML = `
+            <div class="success-box">
+                <h3>স্টুডেন্ট প্যানেল</h3>
+                <p><b>আইডি:</b> ${student.id} | <b>রোল:</b> ${student.assignedRoll}</p>
+                <p><b>নাম:</b> ${student.name}</p>
+                <p><b>পিতা:</b> ${student.father}</p>
+                <p><b>মাতা:</b> ${student.mother}</p>
+                <p><b>ফি স্ট্যাটাস:</b> ${student.feeInfo}</p>
+            </div>
+        `;
+    }
+
+    function loginAdmin() {
+        let u = document.getElementById('adminUser').value;
+        let p = document.getElementById('adminPass').value;
+        let valid = moderatorsDatabase.some(m => m.user === u && m.pass === p);
+        if(valid) {
+            document.getElementById('adminAuth').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            renderStudentTable();
+        } else {
+            alert("❌ ভুল ইউজারনেম বা পাসওয়ার্ড!");
+        }
+    }
+
+    // শিক্ষক ও স্টাফ যুক্ত করা
+    function addStaffOrTeacher() {
+        let name = document.getElementById('devStaffName').value;
+        let role = document.getElementById('devStaffRole').value;
+        let type = document.getElementById('devStaffType').value;
+        let file = document.getElementById('devStaffImg').files[0];
+
+        if(name && role && file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let html = `<div class="profile-card"><img src="${e.target.result}" alt="Img"><h3>${name}</h3><p>${role}</p></div>`;
+                if(type === 'teacher') {
+                    document.getElementById('teachersContainer').innerHTML += html;
+                } else {
+                    document.getElementById('staffContainer').innerHTML += html;
+                }
+                alert("সফলভাবে যুক্ত হয়েছে!");
+            }
+            reader.readAsDataURL(file);
+        } else {
+            alert("সকল তথ্য ও ছবি দিন!");
+        }
+    }
+
+    function addNewNoticeFromDev() {
+        let title = document.getElementById('devNoticeTitle').value;
+        let body = document.getElementById('devNoticeBody').value;
+        if(title && body) {
+            document.getElementById('noticeContainer').innerHTML = `<div class="notice-card"><h3>${title}</h3><p>${body}</p></div>` + document.getElementById('noticeContainer').innerHTML;
+            alert("নোটিশ পাবলিশ হয়েছে!");
+        }
+    }
+
+    function saveAllDevSettings() {
+        document.getElementById('colEmailDisplay').innerText = document.getElementById('devEmail').value;
+        document.getElementById('colGmailDisplay').innerText = document.getElementById('devGmail').value;
+        
+        let speech = document.getElementById('devWelcomeSpeech').value;
+        if(speech) document.getElementById('homeWelcomeSpeech').innerText = speech;
+
+        let history = document.getElementById('devHistoryText').value;
+        if(history) document.getElementById('collegeHistory').innerText = history;
+
+        let rules = document.getElementById('devRulesInput').value;
+        if(rules) document.getElementById('admissionRulesContent').innerHTML = `<div class="notice-card"><p>${rules}</p></div>`;
+
+        // ফাইল ছবি হ্যান্ডেলিং
+        let logo = document.getElementById('uploadLogo').files[0];
+        if(logo) {
+            let r = new FileReader();
+            r.onload = e => document.getElementById('siteLogo').src = e.target.result;
+            r.readAsDataURL(logo);
+        }
+
+        let founder = document.getElementById('uploadFounder').files[0];
+        if(founder) {
+            let r = new FileReader();
+            r.onload = e => document.getElementById('founderImg').src = e.target.result;
+            r.readAsDataURL(founder);
+        }
+
+        let principal = document.getElementById('uploadPrincipal').files[0];
+        if(principal) {
+            let r = new FileReader();
+            r.onload = e => document.getElementById('principalImg').src = e.target.result;
+            r.readAsDataURL(principal);
+        }
+
+        alert("সকল পরিবর্তন সংরক্ষিত হয়েছে!");
+    }
+</script>
+
+</body>
+                                                            </html>
