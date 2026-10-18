@@ -61,4 +61,310 @@
     <a onclick="showSection('developer-panel')" style="background: #d9534f;">ডেভেলপার প্যানেল</a>
 </nav>
 
-<div class
+<div class="container">
+    <!-- ১. হোম সেকশন -->
+    <div id="home" class="section active">
+        <h2>কলেজের বিবরণ ও ইতিহাস</h2>
+        <p id="collegeHistory">
+            অধ্যাপক আব্দুল মজিদ কলেজ কুমিল্লা জেলার রামচন্দ্রপুরে ১৯৯৫ সালে প্রতিষ্ঠিত একটি প্রখ্যাত শিক্ষাপ্রতিষ্ঠান। এটি শিক্ষার্থীদের মেধা বিকাশ ও সুশিক্ষায় সুদীর্ঘ সময় ধরে অবদান রেখে আসছে।
+        </p>
+
+        <div class="profile-grid">
+            <div class="profile-card">
+                <img id="founderImg" src="https://via.placeholder.com/160x180?text=Founder+Image" alt="প্রতিষ্ঠাতা">
+                <h3 id="founderName">অধ্যাপক আব্দুল মজিদ</h3>
+                <p><b>প্রতিষ্ঠাতা</b></p>
+            </div>
+            <div class="profile-card">
+                <img id="principalImg" src="https://via.placeholder.com/160x180?text=Principal+Image" alt="অধ্যক্ষ">
+                <h3 id="principalName">অধ্যক্ষ মহোদয়</h3>
+                <p><b>ভারপ্রাপ্ত অধ্যক্ষ</b></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ২. নোটিশ বোর্ড -->
+    <div id="notice" class="section">
+        <h2>নোটিশ বোর্ড</h2>
+        <div id="noticeContainer">
+            <div class="notice-card">
+                <h3>২০২৬ শিক্ষাবর্ষের একাদশ শ্রেণির ভর্তি সংক্রান্ত নোটিশ</h3>
+                <p>অনলাইনে সফলভাবে আবেদন সম্পন্ন করার পর প্রাপ্ত স্টুডেন্ট আইডি সংরক্ষণ করুন।</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ৩. অনলাইন ভর্তি ফরম -->
+    <div id="admission" class="section">
+        <h2>অনলাইন ভর্তি ফরম</h2>
+        <form id="admissionForm" onsubmit="handleAdmission(event)">
+            <div class="form-group">
+                <label>শিক্ষার্থীর নাম:</label>
+                <input type="text" id="studentName" required placeholder="আপনার নাম লিখুন">
+            </div>
+            <div class="form-group">
+                <label>পিতার নাম:</label>
+                <input type="text" id="fatherName" required placeholder="পিতার নাম লিখুন">
+            </div>
+            <div class="form-group">
+                <label>মোবাইল নম্বর (পাসওয়ার্ড হিসেবে ব্যবহার হবে):</label>
+                <input type="tel" id="mobile" required placeholder="017XXXXXXXX">
+            </div>
+            <div class="form-group">
+                <label>গ্রুপ:</label>
+                <select id="group" required>
+                    <option value="বিজ্ঞান">বিজ্ঞান</option>
+                    <option value="মানবিক">মানবিক</option>
+                    <option value="ব্যবসায় শিক্ষা">ব্যবসায় শিক্ষা</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>এসএসসি রোল নম্বর:</label>
+                <input type="number" id="sscRoll" required placeholder="SSC Roll">
+            </div>
+            <button type="submit">আবেদন সম্পন্ন করুন</button>
+        </form>
+        <div id="admissionResult"></div>
+    </div>
+
+    <!-- ৪. স্টুডেন্ট লগইন -->
+    <div id="student-login" class="section">
+        <h2>স্টুডেন্ট লগইন</h2>
+        <form onsubmit="handleStudentLogin(event)">
+            <div class="form-group">
+                <label>স্টুডেন্ট আইডি (যেমন: 2026001):</label>
+                <input type="text" id="loginStudentId" required>
+            </div>
+            <div class="form-group">
+                <label>পাসওয়ার্ড (মোবাইল নম্বর):</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit">লগইন</button>
+        </form>
+        <div id="studentProfile"></div>
+    </div>
+
+    <!-- ৫. অ্যাডমিন ও মডারেটর ড্যাশবোর্ড -->
+    <div id="admin-panel" class="section">
+        <h2>অ্যাডমিন / মডারেটর প্যানেল</h2>
+        <div id="adminAuth">
+            <div class="form-group">
+                <label>ইমেইল / ইউজারনেম:</label>
+                <input type="text" id="adminUser" placeholder="admin">
+            </div>
+            <div class="form-group">
+                <label>পাসওয়ার্ড:</label>
+                <input type="password" id="adminPass" placeholder="1234">
+            </div>
+            <button onclick="loginAdmin()">লগইন</button>
+        </div>
+
+        <div id="dashboard" style="display: none;">
+            <p style="color: green; font-weight: bold;">স্বাগতম! আপনি ড্যাশবোর্ডে যুক্ত আছেন।</p>
+            <hr>
+            <h3>ভর্তিকৃত শিক্ষার্থীদের তালিকা (সিরিয়াল অনুযায়ী)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>আইডি</th>
+                        <th>নাম</th>
+                        <th>পিতার নাম</th>
+                        <th>মোবাইল</th>
+                        <th>গ্রুপ</th>
+                        <th>এসএসসি রোল</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody"></tbody>
+            </table>
+
+            <hr>
+            <h3>মডারেটর নিয়ন্ত্রণ (শুধুমাত্র মূল অ্যাডমিন)</h3>
+            <div class="form-group">
+                <input type="email" id="newModEmail" placeholder="নতুন মডারেটরের ইমেইল">
+            </div>
+            <button onclick="addModerator()">অনুমতি দিন</button>
+            <ul id="moderatorList"></ul>
+        </div>
+    </div>
+
+    <!-- ৬. ডেভেলপার প্যানেল (Super Admin) -->
+    <div id="developer-panel" class="section">
+        <h2>ডেভেলপার প্যানেল (কাস্টমাইজেশন কেন্দ্র)</h2>
+        <div class="dev-box">
+            <p>এখানে ডেভেলপার কোনো কোডিং ছাড়াই ওয়েবসাইটের নাম, রঙ, ছবি এবং নোটিশ আপডেট করতে পারবেন।</p>
+        </div>
+
+        <h3>১. ওয়েবসাইটের নাম ও কালার কাস্টমাইজেশন</h3>
+        <div class="form-group">
+            <label>কলেজের নাম (বাংলা/English):</label>
+            <input type="text" id="devCollegeName" value="অধ্যাপক আব্দুল মজিদ কলেজ">
+        </div>
+        <div class="form-group">
+            <label>প্রাইমারি কালার (Header/Theme):</label>
+            <input type="color" id="devPrimaryColor" value="#004d40">
+        </div>
+        <div class="form-group">
+            <label>সেকেন্ডারি কালার (Nav/Buttons):</label>
+            <input type="color" id="devSecondaryColor" value="#00796b">
+        </div>
+
+        <hr>
+        <h3>২. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি লিংক</h3>
+        <div class="form-group">
+            <label>প্রতিষ্ঠাতার ছবির URL (Link):</label>
+            <input type="text" id="devFounderImg" placeholder="https://example.com/founder.jpg">
+        </div>
+        <div class="form-group">
+            <label>অধ্যক্ষের ছবির URL (Link):</label>
+            <input type="text" id="devPrincipalImg" placeholder="https://example.com/principal.jpg">
+        </div>
+
+        <hr>
+        <h3>৩. নতুন নোটিশ যোগ করুন</h3>
+        <div class="form-group">
+            <label>নোটিশের শিরোনাম:</label>
+            <input type="text" id="devNoticeTitle">
+        </div>
+        <div class="form-group">
+            <label>নোটিশের বিস্তারিত:</label>
+            <textarea id="devNoticeBody" rows="3"></textarea>
+        </div>
+        <button onclick="addNewNotice()">নোটিশ প্রকাশ করুন</button>
+
+        <hr style="margin-top:20px;">
+        <button onclick="saveDeveloperSettings()" style="background: #28a745;">সব পরিবর্তন সেভ করুন</button>
+    </div>
+</div>
+
+<script>
+    // সেকশন দেখানোর ফাংশন
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    let currentYear = new Date().getFullYear();
+    let serialCounter = 1;
+    let studentsDatabase = [];
+
+    // অনলাইন ভর্তি জেনারেট করা
+    function handleAdmission(e) {
+        e.preventDefault();
+        let formattedSerial = String(serialCounter).padStart(3, '0');
+        let generatedStudentId = `${currentYear}${formattedSerial}`;
+        
+        let name = document.getElementById('studentName').value;
+        let father = document.getElementById('fatherName').value;
+        let mobile = document.getElementById('mobile').value;
+        let group = document.getElementById('group').value;
+        let roll = document.getElementById('sscRoll').value;
+
+        let studentData = { id: generatedStudentId, name, father, mobile, group, roll };
+        studentsDatabase.push(studentData);
+
+        let tbody = document.getElementById('studentTableBody');
+        tbody.innerHTML += `<tr>
+            <td><b>${generatedStudentId}</b></td>
+            <td>${name}</td>
+            <td>${father}</td>
+            <td>${mobile}</td>
+            <td>${group}</td>
+            <td>${roll}</td>
+        </tr>`;
+
+        document.getElementById('admissionResult').innerHTML = `
+            <div class="success-box">
+                🎉 ভর্তি সফল হয়েছে!<br>
+                আপনার ইউনিক স্টুডেন্ট আইডি: <b>${generatedStudentId}</b><br>
+                লগইন করার সময় আপনার এই আইডি এবং মোবাইল নম্বর ব্যবহার করুন।
+            </div>
+        `;
+
+        serialCounter++;
+        document.getElementById('admissionForm').reset();
+    }
+
+    // ডেভেলপার অপশন সেভ করা
+    function saveDeveloperSettings() {
+        let name = document.getElementById('devCollegeName').value;
+        let pColor = document.getElementById('devPrimaryColor').value;
+        let sColor = document.getElementById('devSecondaryColor').value;
+        let founderImg = document.getElementById('devFounderImg').value;
+        let principalImg = document.getElementById('devPrincipalImg').value;
+
+        if(name) {
+            document.getElementById('collegeNameTitle').innerText = name;
+            document.getElementById('siteTitleNav').innerText = name;
+        }
+
+        document.documentElement.style.setProperty('--primary-color', pColor);
+        document.documentElement.style.setProperty('--secondary-color', sColor);
+
+        if(founderImg) document.getElementById('founderImg').src = founderImg;
+        if(principalImg) document.getElementById('principalImg').src = principalImg;
+
+        alert("ডেভেলপার পরিবর্তনসমূহ সফলভাবে সেভ করা হয়েছে!");
+    }
+
+    // নোটিশ যোগ করা
+    function addNewNotice() {
+        let title = document.getElementById('devNoticeTitle').value;
+        let body = document.getElementById('devNoticeBody').value;
+
+        if(title && body) {
+            let container = document.getElementById('noticeContainer');
+            container.innerHTML = `<div class="notice-card"><h3>${title}</h3><p>${body}</p></div>` + container.innerHTML;
+            alert("নতুন নোটিশ প্রকাশিত হয়েছে!");
+            document.getElementById('devNoticeTitle').value = '';
+            document.getElementById('devNoticeBody').value = '';
+        }
+    }
+
+    // অ্যাডমিন লগইন
+    function loginAdmin() {
+        let u = document.getElementById('adminUser').value;
+        let p = document.getElementById('adminPass').value;
+        if(u === "admin" && p === "1234") {
+            document.getElementById('adminAuth').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        } else {
+            alert("ভুল ইউজারনেম বা পাসওয়ার্ড!");
+        }
+    }
+
+    // মডারেটর যোগ
+    function addModerator() {
+        let email = document.getElementById('newModEmail').value;
+        if(email) {
+            let ul = document.getElementById('moderatorList');
+            ul.innerHTML += `<li style="margin-bottom:8px;">${email} <span class="badge">মডারেটর</span> <button onclick="this.parentElement.remove()" style="width: auto; padding: 2px 8px; background: red; margin-left:10px;">বাতিল করুন</button></li>`;
+            document.getElementById('newModEmail').value = '';
+        }
+    }
+
+    // স্টুডেন্ট লগইন
+    function handleStudentLogin(e) {
+        e.preventDefault();
+        let id = document.getElementById('loginStudentId').value;
+        let pass = document.getElementById('loginPassword').value;
+        let student = studentsDatabase.find(s => s.id === id && s.mobile === pass);
+
+        if(student) {
+            document.getElementById('studentProfile').innerHTML = `
+                <div class="success-box">
+                    <h3>শিক্ষার্থী তথ্য</h3>
+                    <p><b>আইডি:</b> ${student.id}</p>
+                    <p><b>নাম:</b> ${student.name}</p>
+                    <p><b>পিতার নাম:</b> ${student.father}</p>
+                    <p><b>গ্রুপ:</b> ${student.group}</p>
+                    <p><b>এসএসসি রোল:</b> ${student.roll}</p>
+                </div>
+            `;
+        } else {
+            alert("আইডি বা পাসওয়ার্ড ভুল!");
+        }
+    }
+</script>
+
+</body>
+    </html>
