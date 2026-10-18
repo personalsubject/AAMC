@@ -21,14 +21,14 @@
             position: relative; overflow-x: hidden; 
         }
 
-        /* ওয়াটারমার্ক ব্যাকগ্রাউন্ড লোগো */
+        /* ব্যাকগ্রাউন্ড হালকা ঝাপসা ওয়াটারমার্ক লোগো (image5.jpg - স্থায়ী) */
         body::before {
             content: "";
             position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 380px; height: 380px;
-            background-image: var(--watermark-logo, url('https://via.placeholder.com/380?text=LOGO'));
+            background-image: url('image5.jpg');
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
@@ -38,6 +38,7 @@
             border-radius: 50%;
         }
         
+        /* ভাসমান টেক্সট */
         .floating-text-container { position: fixed; top: 15%; left: 5%; width: 90%; height: 70vh; pointer-events: none; z-index: 999; overflow: hidden; }
         .floating-text { position: absolute; font-size: 20px; font-weight: bold; color: rgba(0, 77, 64, 0.22); white-space: nowrap; animation: floatAround 18s ease-in-out infinite alternate; }
         @keyframes floatAround {
@@ -50,9 +51,10 @@
 
         .marquee-container { background: #111; color: rgba(255, 255, 255, 0.8); font-size: 14px; padding: 6px 0; white-space: nowrap; overflow: hidden; position: relative; z-index: 2; }
         
+        /* হেডারের ব্যাকগ্রাউন্ড ছবি (image4.jpg - স্থায়ী) */
         header { 
             background-color: var(--primary-color);
-            background-image: var(--header-bg-img, none);
+            background-image: url('image4.jpg');
             background-repeat: no-repeat;
             background-position: center center;
             background-size: cover;
@@ -115,7 +117,8 @@
 </div>
 
 <header id="mainHeader">
-    <img id="siteLogo" src="https://via.placeholder.com/90?text=LOGO" alt="Logo">
+    <!-- মূল লোগো (image1.jpg - স্থায়ী) -->
+    <img id="siteLogo" src="image1.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/90?text=LOGO'">
     <div>
         <h1 id="collegeNameTitle" style="margin:0; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.6);">অধ্যাপক আব্দুল মজিদ কলেজ</h1>
         <p id="collegeSubTitle" style="margin:5px 0 0 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা | EIIN: 106061</p>
@@ -149,12 +152,14 @@
         <p id="collegeHistory">অধ্যাপক আব্দুল মজিদ কলেজ কুমিল্লার মুরাদনগর উপজেলার রামচন্দ্রপুরে ১৯৯৫ সালে প্রতিষ্ঠিত একটি ঐতিহ্যবাহী শিক্ষাপ্রতিষ্ঠান।</p>
         <div class="profile-grid">
             <div class="profile-card">
-                <img id="founderImg" src="https://via.placeholder.com/130x150?text=Founder" alt="প্রতিষ্ঠাতা">
+                <!-- প্রতিষ্ঠাতা (image2.jpg - স্থায়ী) -->
+                <img id="founderImg" src="image2.jpg" alt="প্রতিষ্ঠাতা" onerror="this.src='https://via.placeholder.com/130x150?text=Founder'">
                 <h3 id="founderName">অধ্যাপক আব্দুল মজিদ</h3>
                 <p><b>প্রতিষ্ঠাতা</b></p>
             </div>
             <div class="profile-card">
-                <img id="principalImg" src="https://via.placeholder.com/130x150?text=Principal" alt="অধ্যক্ষ">
+                <!-- অধ্যক্ষ (image3.jpg - স্থায়ী) -->
+                <img id="principalImg" src="image3.jpg" alt="অধ্যক্ষ" onerror="this.src='https://via.placeholder.com/130x150?text=Principal'">
                 <h3 id="principalName">অধ্যক্ষ মুহাম্মদ ফেরদৌস আহমেদ</h3>
                 <p><b>অধ্যক্ষ</b></p>
             </div>
@@ -301,16 +306,9 @@
             <div class="success-box">🔓 ডেভেলপার প্যানেল ফুল এক্সেস গ্রান্টেড!</div>
 
             <hr>
-            <h3>১. হেডারের ব্যাকগ্রাউন্ড ছবি ও লোগো আপলোড (ফাইল থেকে)</h3>
-            <div class="form-group"><label>হেডার ব্যাকগ্রাউন্ড ছবি সিলেক্ট করুন:</label><input type="file" id="uploadHeaderBg" accept="image/*"></div>
-            <div class="form-group">
-                <label>ছবির ফিটিং মোড:</label>
-                <select id="devHeaderBgSize">
-                    <option value="cover">Cover (পুরো হেডার জুড়ে)</option>
-                    <option value="contain">Contain (পুরো ছবি দেখা যাবে)</option>
-                </select>
-            </div>
-            <div class="form-group"><label>লোগো ছবি সিলেক্ট করুন (ওয়াটারমার্ক হিসেবেও সেট হবে):</label><input type="file" id="uploadLogo" accept="image/*"></div>
+            <h3>১. তথ্য ও টেক্সট কাস্টমাইজেশন</h3>
+            <div class="form-group"><label>ঘুরতে থাকা টেক্সট:</label><input type="text" id="devFloatingTextInput"></div>
+            <div class="form-group"><label>বিকাশ নম্বর:</label><input type="text" id="devBkashNumber"></div>
 
             <hr>
             <h3>২. ইউজার ও মডারেটর অ্যাকাউন্ট তৈরি করুন</h3>
@@ -325,42 +323,17 @@
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড (গ্যালারি/ফাইল থেকে)</h3>
-            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি (অধ্যাপক আব্দুল মজিদ):</label><input type="file" id="uploadFounder" accept="image/*"></div>
-            <div class="form-group"><label>অধ্যক্ষের ছবি (মুজিব স্যার / অধ্যক্ষ):</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
-
-            <hr>
-            <h3>৪. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
-            <div class="form-group"><label>ঘুরতে থাকা টেক্সট:</label><input type="text" id="devFloatingTextInput"></div>
-            <div class="form-group"><label>বিকাশ নম্বর:</label><input type="text" id="devBkashNumber"></div>
-
-            <hr>
-            <h3>৫. নতুন নোটিশ প্রকাশ করুন</h3>
+            <h3>৩. নতুন নোটিশ প্রকাশ করুন</h3>
             <div class="form-group"><label>নোটিশ শিরোনাম:</label><input type="text" id="devNoticeTitle"></div>
             <div class="form-group"><label>নোটিশ বিস্তারিত:</label><textarea id="devNoticeBody" rows="2"></textarea></div>
             <button onclick="addNewNoticeFromDev()">নোটিশ পাবলিশ করুন</button>
 
             <hr>
-            <h3>৬. শিক্ষক, স্টাফ বা ফলাফল যুক্ত করুন (ফাইল আপলোড দিয়ে)</h3>
-            <div class="form-group"><label>নাম / শিরোনাম:</label><input type="text" id="devItemName"></div>
-            <div class="form-group"><label>পদবী / বিবরণ:</label><input type="text" id="devItemDesc"></div>
-            <div class="form-group"><label>ছবি সিলেক্ট করুন:</label><input type="file" id="devItemImg" accept="image/*"></div>
-            <div class="form-group">
-                <label>টাইপ:</label>
-                <select id="devItemType">
-                    <option value="teacher">শিক্ষকবৃন্দ</option>
-                    <option value="staff">স্টাফ</option>
-                    <option value="result">ফলাফল</option>
-                </select>
-            </div>
-            <button onclick="addDevDynamicItem()">যুক্ত করুন</button>
-
-            <hr>
-            <h3>৭. ফুটার কন্টাক্ট টেক্সট</h3>
+            <h3>৪. ফুটার কন্টাক্ট টেক্সট</h3>
             <div class="form-group"><label>ফুটার টেক্সট:</label><textarea id="devFooterText" rows="2"></textarea></div>
 
             <hr style="margin-top:20px;">
-            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সেভ করুন</button>
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সেভ করুন</button>
         </div>
     </div>
 </div>
@@ -377,15 +350,9 @@
     let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
     let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
     let complaintsList = JSON.parse(localStorage.getItem('complaintsDB')) || [];
-    let dynamicItems = JSON.parse(localStorage.getItem('dynamicItemsDB')) || [];
     let noticeList = JSON.parse(localStorage.getItem('noticeDB')) || [{title: "২০২৬ শিক্ষাবর্ষের ভর্তি চলছে", body: "অনলাইন ভর্তি ফরম পূরণ করুন।"}];
     let devBkash = localStorage.getItem('devBkash') || "01713422046 (Personal)";
     let floatingTextVal = localStorage.getItem('floatingTextVal') || "This website made by Nahid";
-    let headerBgImg = localStorage.getItem('headerBgImg') || "";
-    let headerBgSize = localStorage.getItem('headerBgSize') || "cover";
-    let logoImg = localStorage.getItem('logoImg') || "";
-    let founderImgData = localStorage.getItem('founderImg') || "";
-    let principalImgData = localStorage.getItem('principalImg') || "";
     let footerTextVal = localStorage.getItem('footerText') || "অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।";
     let activeRoleCounter = parseInt(localStorage.getItem('activeRoleCounter')) || 1;
     let serialCounter = parseInt(localStorage.getItem('serialCounter')) || 1;
@@ -399,15 +366,9 @@
         localStorage.setItem('moderatorsDB', JSON.stringify(moderatorsDatabase));
         localStorage.setItem('panelUsersDB', JSON.stringify(panelUsersDatabase));
         localStorage.setItem('complaintsDB', JSON.stringify(complaintsList));
-        localStorage.setItem('dynamicItemsDB', JSON.stringify(dynamicItems));
         localStorage.setItem('noticeDB', JSON.stringify(noticeList));
         localStorage.setItem('devBkash', devBkash);
         localStorage.setItem('floatingTextVal', floatingTextVal);
-        localStorage.setItem('headerBgImg', headerBgImg);
-        localStorage.setItem('headerBgSize', headerBgSize);
-        localStorage.setItem('logoImg', logoImg);
-        localStorage.setItem('founderImg', founderImgData);
-        localStorage.setItem('principalImg', principalImgData);
         localStorage.setItem('footerText', footerTextVal);
         localStorage.setItem('activeRoleCounter', activeRoleCounter);
         localStorage.setItem('serialCounter', serialCounter);
@@ -417,85 +378,23 @@
         document.getElementById('screenFloatingText').innerText = floatingTextVal;
         document.getElementById('devFloatingTextInput').value = floatingTextVal;
         document.getElementById('devBkashNumber').value = devBkash;
-        document.getElementById('devHeaderBgSize').value = headerBgSize;
         document.getElementById('devFooterText').value = footerTextVal;
         document.getElementById('customFooterArea').innerText = footerTextVal;
-
-        if(headerBgImg) {
-            document.documentElement.style.setProperty('--header-bg-img', `url('${headerBgImg}')`);
-            let hdr = document.getElementById('mainHeader');
-            hdr.style.backgroundSize = headerBgSize;
-        }
-        if(logoImg) {
-            document.getElementById('siteLogo').src = logoImg;
-            document.documentElement.style.setProperty('--watermark-logo', `url('${logoImg}')`);
-        }
-        if(founderImgData) document.getElementById('founderImg').src = founderImgData;
-        if(principalImgData) document.getElementById('principalImg').src = principalImgData;
 
         renderNotices();
         renderStudentTable();
         renderPublicStudentsByGroup();
-        renderDynamicItems();
     }
 
-    // ছবি প্রসেসিং করার নিরাপদ হেলপার ফাংশন
-    function readFileAsDataURL(file) {
-        return new Promise((resolve) => {
-            if(!file) resolve(null);
-            let reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.readAsDataURL(file);
-        });
-    }
-
-    async function saveAllDevSettings() {
+    function saveAllDevSettings() {
         devBkash = document.getElementById('devBkashNumber').value;
         floatingTextVal = document.getElementById('devFloatingTextInput').value;
-        headerBgSize = document.getElementById('devHeaderBgSize').value;
         footerTextVal = document.getElementById('devFooterText').value;
-
-        let headerFile = document.getElementById('uploadHeaderBg').files[0];
-        let logoFile = document.getElementById('uploadLogo').files[0];
-        let founderFile = document.getElementById('uploadFounder').files[0];
-        let principalFile = document.getElementById('uploadPrincipal').files[0];
-
-        let hImg = await readFileAsDataURL(headerFile);
-        if(hImg) headerBgImg = hImg;
-
-        let lImg = await readFileAsDataURL(logoFile);
-        if(lImg) logoImg = lImg;
-
-        let fImg = await readFileAsDataURL(founderFile);
-        if(fImg) founderImgData = fImg;
-
-        let pImg = await readFileAsDataURL(principalFile);
-        if(pImg) principalImgData = pImg;
 
         saveDB();
         updateUI();
 
-        alert("✅ সফলভাবে সেভ হয়েছে! ছবিগুলো সিস্টেমে সংরক্ষণ করা হয়েছে।");
-    }
-
-    async function addDevDynamicItem() {
-        let name = document.getElementById('devItemName').value;
-        let desc = document.getElementById('devItemDesc').value;
-        let type = document.getElementById('devItemType').value;
-        let file = document.getElementById('devItemImg').files[0];
-
-        if(!name) { alert("নাম বা শিরোনাম দিন!"); return; }
-
-        let imgData = await readFileAsDataURL(file) || "";
-
-        dynamicItems.push({ id: Date.now(), name, desc, type, img: imgData });
-        saveDB();
-        renderDynamicItems();
-
-        alert("সফলভাবে যুক্ত হয়েছে!");
-        document.getElementById('devItemName').value = '';
-        document.getElementById('devItemDesc').value = '';
-        document.getElementById('devItemImg').value = '';
+        alert("✅ সফলভাবে সেভ হয়েছে!");
     }
 
     function showSection(id) {
@@ -869,30 +768,7 @@
             `;
         });
     }
-
-    function renderDynamicItems() {
-        let tc = document.getElementById('teachersContainer');
-        let sc = document.getElementById('staffContainer');
-        let rc = document.getElementById('resultsContainer');
-        if(!tc) return;
-
-        tc.innerHTML = ''; sc.innerHTML = ''; rc.innerHTML = '';
-
-        dynamicItems.forEach((item, index) => {
-            let cardHTML = `
-                <div class="profile-card">
-                    ${item.img ? `<img src="${item.img}">` : ''}
-                    <h3>${item.name}</h3>
-                    <p>${item.desc}</p>
-                    <button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button>
-                </div>
-            `;
-            if(item.type === 'teacher') tc.innerHTML += cardHTML;
-            if(item.type === 'staff') sc.innerHTML += cardHTML;
-            if(item.type === 'result') rc.innerHTML += `<div class="notice-card"><h3>${item.name}</h3><p>${item.desc}</p><button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button></div>`;
-        });
-    }
 </script>
 
 </body>
-    </html>
+        </html>
