@@ -281,7 +281,7 @@
         <div id="userControls" style="display: none;">
             <div class="success-box">স্বাগতম ইউজার প্যানেলে!</div>
             <hr>
-            <h3>शिक्षার্থীদের সমস্যা ও চ্যাট বক্স:</h3>
+            <h3>শিক্ষার্থীদের সমস্যা ও চ্যাট বক্স:</h3>
             <div id="userPanelComplaintsList"></div>
         </div>
     </div>
@@ -301,11 +301,8 @@
             <div class="success-box">🔓 ডেভেলপার প্যানেল ফুল এক্সেস গ্রান্টেড!</div>
 
             <hr>
-            <h3>১. ব্যাকগ্রাউন্ড ছবি ও লোগোর ইউআরএল (URL)</h3>
-            <div class="form-group">
-                <label>হেডার ব্যাকগ্রাউন্ড ছবির URL:</label>
-                <input type="text" id="devHeaderBgUrlInput" placeholder="https://example.com/header-bg.jpg">
-            </div>
+            <h3>১. হেডারের ব্যাকগ্রাউন্ড ছবি ও লোগো আপলোড (ফাইল থেকে)</h3>
+            <div class="form-group"><label>হেডার ব্যাকগ্রাউন্ড ছবি সিলেক্ট করুন:</label><input type="file" id="uploadHeaderBg" accept="image/*"></div>
             <div class="form-group">
                 <label>ছবির ফিটিং মোড:</label>
                 <select id="devHeaderBgSize">
@@ -313,10 +310,7 @@
                     <option value="contain">Contain (পুরো ছবি দেখা যাবে)</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>লোগো ছবির URL (ওয়াটারমার্ক হিসেবেও দেখাবে):</label>
-                <input type="text" id="devLogoUrlInput" placeholder="https://example.com/logo.png">
-            </div>
+            <div class="form-group"><label>লোগো ছবি সিলেক্ট করুন (ওয়াটারমার্ক হিসেবেও সেট হবে):</label><input type="file" id="uploadLogo" accept="image/*"></div>
 
             <hr>
             <h3>২. ইউজার ও মডারেটর অ্যাকাউন্ট তৈরি করুন</h3>
@@ -331,15 +325,9 @@
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবির ইউআরএল (URL)</h3>
-            <div class="form-group">
-                <label>প্রতিষ্ঠাতার ছবির URL (অধ্যাপক আব্দুল মজিদ):</label>
-                <input type="text" id="devFounderUrlInput" placeholder="https://example.com/founder.jpg">
-            </div>
-            <div class="form-group">
-                <label>অধ্যক্ষের ছবির URL (মুজিব স্যার / অধ্যক্ষ):</label>
-                <input type="text" id="devPrincipalUrlInput" placeholder="https://example.com/principal.jpg">
-            </div>
+            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড (গ্যালারি/ফাইল থেকে)</h3>
+            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি (অধ্যাপক আব্দুল মজিদ):</label><input type="file" id="uploadFounder" accept="image/*"></div>
+            <div class="form-group"><label>অধ্যক্ষের ছবি (মুজিব স্যার / অধ্যক্ষ):</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
 
             <hr>
             <h3>৪. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
@@ -353,10 +341,10 @@
             <button onclick="addNewNoticeFromDev()">নোটিশ পাবলিশ করুন</button>
 
             <hr>
-            <h3>৬. শিক্ষক, স্টাফ বা ফলাফলের ছবি যুক্ত করুন (URL দিয়ে)</h3>
+            <h3>৬. শিক্ষক, স্টাফ বা ফলাফল যুক্ত করুন (ফাইল আপলোড দিয়ে)</h3>
             <div class="form-group"><label>নাম / শিরোনাম:</label><input type="text" id="devItemName"></div>
             <div class="form-group"><label>পদবী / বিবরণ:</label><input type="text" id="devItemDesc"></div>
-            <div class="form-group"><label>ছবির URL:</label><input type="text" id="devItemImgUrl" placeholder="https://example.com/image.jpg"></div>
+            <div class="form-group"><label>ছবি সিলেক্ট করুন:</label><input type="file" id="devItemImg" accept="image/*"></div>
             <div class="form-group">
                 <label>টাইপ:</label>
                 <select id="devItemType">
@@ -433,11 +421,6 @@
         document.getElementById('devFooterText').value = footerTextVal;
         document.getElementById('customFooterArea').innerText = footerTextVal;
 
-        document.getElementById('devHeaderBgUrlInput').value = headerBgImg;
-        document.getElementById('devLogoUrlInput').value = logoImg;
-        document.getElementById('devFounderUrlInput').value = founderImgData;
-        document.getElementById('devPrincipalUrlInput').value = principalImgData;
-
         if(headerBgImg) {
             document.documentElement.style.setProperty('--header-bg-img', `url('${headerBgImg}')`);
             let hdr = document.getElementById('mainHeader');
@@ -456,39 +439,63 @@
         renderDynamicItems();
     }
 
-    function saveAllDevSettings() {
+    // ছবি প্রসেসিং করার নিরাপদ হেলপার ফাংশন
+    function readFileAsDataURL(file) {
+        return new Promise((resolve) => {
+            if(!file) resolve(null);
+            let reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function saveAllDevSettings() {
         devBkash = document.getElementById('devBkashNumber').value;
         floatingTextVal = document.getElementById('devFloatingTextInput').value;
         headerBgSize = document.getElementById('devHeaderBgSize').value;
         footerTextVal = document.getElementById('devFooterText').value;
 
-        headerBgImg = document.getElementById('devHeaderBgUrlInput').value.trim();
-        logoImg = document.getElementById('devLogoUrlInput').value.trim();
-        founderImgData = document.getElementById('devFounderUrlInput').value.trim();
-        principalImgData = document.getElementById('devPrincipalUrlInput').value.trim();
+        let headerFile = document.getElementById('uploadHeaderBg').files[0];
+        let logoFile = document.getElementById('uploadLogo').files[0];
+        let founderFile = document.getElementById('uploadFounder').files[0];
+        let principalFile = document.getElementById('uploadPrincipal').files[0];
+
+        let hImg = await readFileAsDataURL(headerFile);
+        if(hImg) headerBgImg = hImg;
+
+        let lImg = await readFileAsDataURL(logoFile);
+        if(lImg) logoImg = lImg;
+
+        let fImg = await readFileAsDataURL(founderFile);
+        if(fImg) founderImgData = fImg;
+
+        let pImg = await readFileAsDataURL(principalFile);
+        if(pImg) principalImgData = pImg;
 
         saveDB();
         updateUI();
 
-        alert("✅ সফলভাবে সেভ হয়েছে! আপনার বসানো URL লিংকগুলোর ছবি এখন লাইভ শো করছে।");
+        alert("✅ সফলভাবে সেভ হয়েছে! ছবিগুলো সিস্টেমে সংরক্ষণ করা হয়েছে।");
     }
 
-    function addDevDynamicItem() {
+    async function addDevDynamicItem() {
         let name = document.getElementById('devItemName').value;
         let desc = document.getElementById('devItemDesc').value;
         let type = document.getElementById('devItemType').value;
-        let imgUrl = document.getElementById('devItemImgUrl').value.trim();
+        let file = document.getElementById('devItemImg').files[0];
 
         if(!name) { alert("নাম বা শিরোনাম দিন!"); return; }
 
-        dynamicItems.push({ id: Date.now(), name, desc, type, img: imgUrl });
+        let imgData = await readFileAsDataURL(file) || "";
+
+        dynamicItems.push({ id: Date.now(), name, desc, type, img: imgData });
         saveDB();
         renderDynamicItems();
 
         alert("সফলভাবে যুক্ত হয়েছে!");
         document.getElementById('devItemName').value = '';
         document.getElementById('devItemDesc').value = '';
-        document.getElementById('devItemImgUrl').value = '';
+        document.getElementById('devItemImg').value = '';
     }
 
     function showSection(id) {
@@ -888,4 +895,4 @@
 </script>
 
 </body>
-</html>
+    </html>
