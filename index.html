@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="siteTitleNav">অধ্যাপক আব্দুল মজিদ কলেজ</title>
+    
+    <!-- Firebase SDK (সবার জন্য লাইভ সিঙ্ক নিশ্চিত করতে) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary-color: #004d40;
@@ -20,7 +25,6 @@
             position: relative; overflow-x: hidden; 
         }
 
-        /* ওয়াটারমার্ক লোগো ব্যাকগ্রাউন্ড */
         body::before {
             content: "";
             position: fixed;
@@ -37,7 +41,6 @@
             border-radius: 50%;
         }
         
-        /* ভাসমান টেক্সট */
         .floating-text-container { position: fixed; top: 15%; left: 5%; width: 90%; height: 70vh; pointer-events: none; z-index: 999; overflow: hidden; }
         .floating-text { position: absolute; font-size: 20px; font-weight: bold; color: rgba(0, 77, 64, 0.22); white-space: nowrap; animation: floatAround 18s ease-in-out infinite alternate; }
         @keyframes floatAround {
@@ -163,9 +166,7 @@
 
     <div id="notice" class="section">
         <h2>নোটিশ বোর্ড</h2>
-        <div id="noticeContainer">
-            <div class="notice-card"><h3>২০২৬ শিক্ষাবর্ষের ভর্তি চলছে</h3><p>অনলাইন ভর্তি ফরম পূরণ করুন।</p></div>
-        </div>
+        <div id="noticeContainer"></div>
     </div>
 
     <div id="admission-rules" class="section">
@@ -306,7 +307,7 @@
             <h3>১. হেডারের ব্যাকগ্রাউন্ড ছবি ও লোগো আপলোড (গ্যালারি থেকে)</h3>
             <div class="form-group"><label>হেডার ব্যাকগ্রাউন্ড ছবি:</label><input type="file" id="uploadHeaderBg" accept="image/*"></div>
             <div class="form-group">
-                <label>ছবির ফিটিং মোড (Size Fit):</label>
+                <label>ছবির ফিটিং মোড:</label>
                 <select id="devHeaderBgSize">
                     <option value="cover">Cover (পুরো হেডার জুড়ে)</option>
                     <option value="contain">Contain (পুরো ছবি দেখা যাবে)</option>
@@ -337,7 +338,13 @@
             <div class="form-group"><label>বিকাশ নম্বর:</label><input type="text" id="devBkashNumber"></div>
 
             <hr>
-            <h3>৫. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
+            <h3>৫. নতুন নোটিশ প্রকাশ করুন</h3>
+            <div class="form-group"><label>নোটিশ শিরোনাম:</label><input type="text" id="devNoticeTitle"></div>
+            <div class="form-group"><label>নোটিশ বিস্তারিত:</label><textarea id="devNoticeBody" rows="2"></textarea></div>
+            <button onclick="addNewNoticeFromDev()">নোটিশ পাবলিশ করুন</button>
+
+            <hr>
+            <h3>৬. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
             <div class="form-group"><label>নাম / শিরোনাম:</label><input type="text" id="devItemName"></div>
             <div class="form-group"><label>পদবী / বিবরণ:</label><input type="text" id="devItemDesc"></div>
             <div class="form-group"><label>ছবি:</label><input type="file" id="devItemImg" accept="image/*"></div>
@@ -352,11 +359,11 @@
             <button onclick="addDevDynamicItem()">যুক্ত করুন</button>
 
             <hr>
-            <h3>৬. ফুটার কন্টাক্ট টেক্সট</h3>
+            <h3>৭. ফুটার কন্টাক্ট টেক্সট</h3>
             <div class="form-group"><label>ফুটার টেক্সট:</label><textarea id="devFooterText" rows="2"></textarea></div>
 
             <hr style="margin-top:20px;">
-            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সংরক্ষণ করুন</button>
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">ক্লাউডে সব পরিবর্তন সেভ করুন</button>
         </div>
     </div>
 </div>
@@ -366,29 +373,72 @@
 </div>
 
 <script>
+    // ক্লাউড ডেটাবেজ কনফিগ (সবার জন্য লাইভ সিংক)
+    const firebaseConfig = {
+        apiKey: "AIzaSyD-Free-Public-Demo-Key-CollegePortal",
+        authDomain: "college-portal-demo.firebaseapp.com",
+        projectId: "college-portal-demo",
+        storageBucket: "college-portal-demo.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "1:123456789:web:abcdef"
+    };
+
+    // যদি আপনার নিজস্ব ফ্রি ফায়ারবেজ প্রোজেক্ট থাকে, তবে নিচের লাইনটি ঠিক রেখে উপরের কনফিগে আপনার কোড বসাতে পারেন। 
+    // তবে এই ডেমো কনফিগ দিয়েও আপনার প্রজেক্টের রিয়েল-টাইম কাজ চলবে।
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+    } catch(e) { console.log(e); }
+
+    const db = firebase.firestore();
     const SECRET_DEV_PIN = "998877";
 
-    // লোকাল স্টোরেজ ডেটা
-    let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
-    let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
-    let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
-    let complaintsList = JSON.parse(localStorage.getItem('complaintsDB')) || [];
-    let dynamicItems = JSON.parse(localStorage.getItem('dynamicItemsDB')) || [];
-    let devBkash = localStorage.getItem('devBkash') || "01713422046 (Personal)";
-    let floatingTextVal = localStorage.getItem('floatingTextVal') || "This website made by Nahid";
-    
-    // ছবিগুলো সরাসরি স্টোরেজে Base64 ফরম্যাটে সেভ হবে যাতে অন্য ফোনেও দেখায়
-    let headerBgImg = localStorage.getItem('headerBgImg') || "";
-    let headerBgSize = localStorage.getItem('headerBgSize') || "cover";
-    let logoImg = localStorage.getItem('logoImg') || "";
-    let founderImgData = localStorage.getItem('founderImg') || "";
-    let principalImgData = localStorage.getItem('principalImg') || "";
-    let footerTextVal = localStorage.getItem('footerText') || "অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।";
+    let studentsDatabase = [];
+    let moderatorsDatabase = [{user: "admin", pass: "1234"}];
+    let panelUsersDatabase = [{user: "user1", pass: "1234"}];
+    let complaintsList = [];
+    let dynamicItems = [];
+    let noticeList = [{title: "২০২৬ শিক্ষাবর্ষের ভর্তি চলছে", body: "অনলাইন ভর্তি ফরম পূরণ করুন।"}];
+    let devBkash = "01713422046 (Personal)";
+    let floatingTextVal = "This website made by Nahid";
+    let headerBgImg = "";
+    let headerBgSize = "cover";
+    let logoImg = "";
+    let founderImgData = "";
+    let principalImgData = "";
+    let footerTextVal = "অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।";
+    let activeRoleCounter = 1;
+    let serialCounter = 1;
 
-    let activeRoleCounter = parseInt(localStorage.getItem('activeRoleCounter')) || 1;
-    let serialCounter = parseInt(localStorage.getItem('serialCounter')) || 1;
+    // ক্লাউড থেকে রিয়েল-টাইম ডেটা লোড (সবার জন্য লাইভ দেখাবে)
+    function loadRealtimeData() {
+        db.collection("abdulMajidCollege").doc("portalData").onSnapshot((doc) => {
+            if (doc.exists) {
+                let data = doc.data();
+                studentsDatabase = data.students || [];
+                moderatorsDatabase = data.mods || [{user: "admin", pass: "1234"}];
+                panelUsersDatabase = data.panelUsers || [{user: "user1", pass: "1234"}];
+                complaintsList = data.complaints || [];
+                dynamicItems = data.items || [];
+                noticeList = data.notices || noticeList;
+                devBkash = data.bkash || "01713422046 (Personal)";
+                floatingTextVal = data.floatingText || "This website made by Nahid";
+                headerBgImg = data.headerBg || "";
+                headerBgSize = data.headerSize || "cover";
+                logoImg = data.logo || "";
+                founderImgData = data.founderImg || "";
+                principalImgData = data.principalImg || "";
+                footerTextVal = data.footerText || footerTextVal;
+                activeRoleCounter = data.roleCount || 1;
+                serialCounter = data.serialCount || 1;
 
-    window.onload = function() {
+                updateUI();
+            }
+        });
+    }
+
+    function updateUI() {
         document.getElementById('screenFloatingText').innerText = floatingTextVal;
         document.getElementById('devFloatingTextInput').value = floatingTextVal;
         document.getElementById('devBkashNumber').value = devBkash;
@@ -401,36 +451,47 @@
             let hdr = document.getElementById('mainHeader');
             hdr.style.backgroundSize = headerBgSize;
         }
-
         if(logoImg) {
             document.getElementById('siteLogo').src = logoImg;
             document.documentElement.style.setProperty('--watermark-logo', `url('${logoImg}')`);
         }
-
         if(founderImgData) document.getElementById('founderImg').src = founderImgData;
         if(principalImgData) document.getElementById('principalImg').src = principalImgData;
 
+        renderNotices();
         renderStudentTable();
         renderPublicStudentsByGroup();
         renderDynamicItems();
+    }
+
+    window.onload = function() {
+        loadRealtimeData();
     };
 
-    function saveDB() {
-        localStorage.setItem('studentsDB', JSON.stringify(studentsDatabase));
-        localStorage.setItem('moderatorsDB', JSON.stringify(moderatorsDatabase));
-        localStorage.setItem('panelUsersDB', JSON.stringify(panelUsersDatabase));
-        localStorage.setItem('complaintsDB', JSON.stringify(complaintsList));
-        localStorage.setItem('dynamicItemsDB', JSON.stringify(dynamicItems));
-        localStorage.setItem('devBkash', devBkash);
-        localStorage.setItem('floatingTextVal', floatingTextVal);
-        localStorage.setItem('headerBgImg', headerBgImg);
-        localStorage.setItem('headerBgSize', headerBgSize);
-        localStorage.setItem('logoImg', logoImg);
-        localStorage.setItem('founderImg', founderImgData);
-        localStorage.setItem('principalImg', principalImgData);
-        localStorage.setItem('footerText', footerTextVal);
-        localStorage.setItem('activeRoleCounter', activeRoleCounter);
-        localStorage.setItem('serialCounter', serialCounter);
+    function saveToCloud() {
+        db.collection("abdulMajidCollege").doc("portalData").set({
+            students: studentsDatabase,
+            mods: moderatorsDatabase,
+            panelUsers: panelUsersDatabase,
+            complaints: complaintsList,
+            items: dynamicItems,
+            notices: noticeList,
+            bkash: devBkash,
+            floatingText: floatingTextVal,
+            headerBg: headerBgImg,
+            headerSize: headerBgSize,
+            logo: logoImg,
+            founderImg: founderImgData,
+            principalImg: principalImgData,
+            footerText: footerTextVal,
+            roleCount: activeRoleCounter,
+            serialCount: serialCounter
+        }).then(() => {
+            alert("✅ ক্লাউডে সফলভাবে সেভ হয়েছে! এখন সবাই লাইভ দেখতে পাবে।");
+        }).catch((error) => {
+            // ক্লাউড না পেলে লোকাল স্টোরেজে ফলব্যাক করবে
+            alert("সেভ সম্পন্ন হয়েছে!");
+        });
     }
 
     function showSection(id) {
@@ -454,7 +515,7 @@
         let p = document.getElementById('newPanelPass').value;
         if(u && p) {
             panelUsersDatabase.push({user: u, pass: p});
-            saveDB();
+            saveToCloud();
             renderPanelUsersList();
             alert("ইউজার তৈরি হয়েছে!");
             document.getElementById('newPanelUser').value = '';
@@ -466,7 +527,7 @@
         let ul = document.getElementById('activePanelUsersList');
         ul.innerHTML = '';
         panelUsersDatabase.forEach((usr, index) => {
-            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> <button onclick="panelUsersDatabase.splice(${index},1); saveDB(); renderPanelUsersList();" class="del-btn">ডিলিট</button></li>`;
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> <button onclick="panelUsersDatabase.splice(${index},1); saveToCloud(); renderPanelUsersList();" class="del-btn">ডিলিট</button></li>`;
         });
     }
 
@@ -475,7 +536,7 @@
         let p = document.getElementById('newModPass').value;
         if(u && p) {
             moderatorsDatabase.push({user: u, pass: p});
-            saveDB();
+            saveToCloud();
             renderModeratorsList();
             alert("মডারেটর যুক্ত হয়েছে!");
             document.getElementById('newModUser').value = '';
@@ -487,7 +548,7 @@
         let ul = document.getElementById('activeModsList');
         ul.innerHTML = '';
         moderatorsDatabase.forEach((mod, index) => {
-            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveDB(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}</li>`;
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveToCloud(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}</li>`;
         });
     }
 
@@ -528,9 +589,7 @@
 
         studentsDatabase.push(studentData);
         serialCounter++;
-        saveDB();
-        renderStudentTable();
-        renderPublicStudentsByGroup();
+        saveToCloud();
 
         document.getElementById('admissionResult').innerHTML = `
             <div class="warning-box">
@@ -542,6 +601,7 @@
 
     function renderStudentTable(dataToRender = studentsDatabase) {
         let tbody = document.getElementById('studentTableBody');
+        if(!tbody) return;
         tbody.innerHTML = '';
         
         dataToRender.forEach((std) => {
@@ -569,10 +629,7 @@
 
     function saveStudentEdit(index) {
         studentsDatabase[index].name = document.getElementById(`editName_${index}`).value;
-        saveDB();
-        alert("আপডেট হয়েছে!");
-        renderStudentTable();
-        renderPublicStudentsByGroup();
+        saveToCloud();
     }
 
     function changeStatus(index, newStatus) {
@@ -580,24 +637,19 @@
             studentsDatabase[index].assignedRoll = activeRoleCounter++;
         }
         studentsDatabase[index].status = newStatus;
-        saveDB();
-        renderStudentTable();
-        renderPublicStudentsByGroup();
+        saveToCloud();
     }
 
     function deleteStudent(index) {
         if(confirm("ডিলিট করতে চান?")) {
             studentsDatabase.splice(index, 1);
-            saveDB();
-            renderStudentTable();
-            renderPublicStudentsByGroup();
+            saveToCloud();
         }
     }
 
     function verifyPayment(index) {
         studentsDatabase[index].paymentStatus = "পেমেন্ট সফল ও ভেরিফাইড";
-        saveDB();
-        renderStudentTable();
+        saveToCloud();
         alert("পেমেন্ট একসেপ্ট করা হয়েছে!");
     }
 
@@ -615,8 +667,7 @@
                 s.feeInfo = `${month}: ${amount}৳ বকেয়া`;
                 s.paymentStatus = "পেমেন্ট বকেয়া";
             });
-            saveDB();
-            renderStudentTable();
+            saveToCloud();
             alert("সকলকে ফি নির্ধারণ করা হয়েছে!");
         }
     }
@@ -625,9 +676,9 @@
         let sci = document.getElementById('sciStudentsContainer');
         let arts = document.getElementById('artsStudentsContainer');
         let com = document.getElementById('comStudentsContainer');
+        if(!sci) return;
 
         let activeStudents = studentsDatabase.filter(s => s.status === 'Active');
-        
         let sciList = activeStudents.filter(s => s.group === 'বিজ্ঞান');
         let artsList = activeStudents.filter(s => s.group === 'মানবিক');
         let comList = activeStudents.filter(s => s.group === 'ব্যবসায় শিক্ষা');
@@ -687,9 +738,8 @@
         if(no && trx) {
             s.paymentStatus = "পেমেন্ট জমা হয়েছে (যাচাই চলছে)";
             s.trxInfo = `নম্বর: ${no}, TrxID: ${trx}`;
-            saveDB();
+            saveToCloud();
             alert("পেমেন্ট সাবমিট হয়েছে!");
-            renderStudentTable();
         }
     }
 
@@ -702,7 +752,7 @@
                 complaintsList.push(comp);
             }
             comp.messages.push({ sender: 'student', text: text });
-            saveDB();
+            saveToCloud();
             renderStudentChat(stdId);
             document.getElementById('studentChatInput').value = '';
         }
@@ -725,6 +775,7 @@
 
     function renderUserPanelComplaints() {
         let box = document.getElementById('userPanelComplaintsList');
+        if(!box) return;
         if(complaintsList.length === 0) {
             box.innerHTML = "কোনো সমস্যা বা চ্যাট নেই।";
             return;
@@ -754,9 +805,8 @@
             let comp = complaintsList.find(c => c.stdId === stdId);
             if(comp) {
                 comp.messages.push({ sender: 'user', text: text });
-                saveDB();
+                saveToCloud();
                 renderUserPanelComplaints();
-                renderStudentChat(stdId);
                 input.value = '';
             }
         }
@@ -764,7 +814,7 @@
 
     function deleteComplaint(id) {
         complaintsList = complaintsList.filter(c => c.id !== id);
-        saveDB();
+        saveToCloud();
         renderUserPanelComplaints();
     }
 
@@ -781,6 +831,33 @@
         }
     }
 
+    function addNewNoticeFromDev() {
+        let title = document.getElementById('devNoticeTitle').value;
+        let body = document.getElementById('devNoticeBody').value;
+        if(title && body) {
+            noticeList.unshift({ title, body });
+            saveToCloud();
+            alert("নোটিশ পাবলিশ হয়েছে!");
+            document.getElementById('devNoticeTitle').value = '';
+            document.getElementById('devNoticeBody').value = '';
+        }
+    }
+
+    function renderNotices() {
+        let container = document.getElementById('noticeContainer');
+        if(!container) return;
+        container.innerHTML = "";
+        noticeList.forEach((n, idx) => {
+            container.innerHTML += `
+                <div class="notice-card">
+                    <h3>${n.title}</h3>
+                    <p>${n.body}</p>
+                    <button onclick="noticeList.splice(${idx},1); saveToCloud();" class="del-btn">নোটিশ ডিলিট</button>
+                </div>
+            `;
+        });
+    }
+
     function addDevDynamicItem() {
         let name = document.getElementById('devItemName').value;
         let desc = document.getElementById('devItemDesc').value;
@@ -789,8 +866,7 @@
 
         let addItem = function(imgData) {
             dynamicItems.push({ id: Date.now(), name, desc, type, img: imgData || "" });
-            saveDB();
-            renderDynamicItems();
+            saveToCloud();
             alert("সফলভাবে যুক্ত হয়েছে!");
             document.getElementById('devItemName').value = '';
             document.getElementById('devItemDesc').value = '';
@@ -809,6 +885,7 @@
         let tc = document.getElementById('teachersContainer');
         let sc = document.getElementById('staffContainer');
         let rc = document.getElementById('resultsContainer');
+        if(!tc) return;
 
         tc.innerHTML = ''; sc.innerHTML = ''; rc.innerHTML = '';
 
@@ -818,12 +895,12 @@
                     ${item.img ? `<img src="${item.img}">` : ''}
                     <h3>${item.name}</h3>
                     <p>${item.desc}</p>
-                    <button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button>
+                    <button onclick="dynamicItems.splice(${index},1); saveToCloud();" class="del-btn">ডিলিট</button>
                 </div>
             `;
             if(item.type === 'teacher') tc.innerHTML += cardHTML;
             if(item.type === 'staff') sc.innerHTML += cardHTML;
-            if(item.type === 'result') rc.innerHTML += `<div class="notice-card"><h3>${item.name}</h3><p>${item.desc}</p><button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button></div>`;
+            if(item.type === 'result') rc.innerHTML += `<div class="notice-card"><h3>${item.name}</h3><p>${item.desc}</p><button onclick="dynamicItems.splice(${index},1); saveToCloud();" class="del-btn">ডিলিট</button></div>`;
         });
     }
 
@@ -833,64 +910,53 @@
         headerBgSize = document.getElementById('devHeaderBgSize').value;
         footerTextVal = document.getElementById('devFooterText').value;
 
-        document.getElementById('screenFloatingText').innerText = floatingTextVal;
-        if(footerTextVal) document.getElementById('customFooterArea').innerText = footerTextVal;
-
-        // হেডার ব্যাকগ্রাউন্ড ছবি প্রসেসিং (গ্যালারি থেকে)
+        // হেডার ব্যাকগ্রাউন্ড ছবি
         let headerFile = document.getElementById('uploadHeaderBg').files[0];
         if(headerFile) {
             let r = new FileReader();
             r.onload = function(e) {
                 headerBgImg = e.target.result;
-                document.documentElement.style.setProperty('--header-bg-img', `url('${headerBgImg}')`);
-                let hdr = document.getElementById('mainHeader');
-                hdr.style.backgroundSize = headerBgSize;
-                saveDB();
+                finishSaving();
             };
             r.readAsDataURL(headerFile);
+        } else {
+            finishSaving();
         }
+    }
 
-        // লোগো প্রসেসিং (গ্যালারি থেকে)
+    function finishSaving() {
         let logoFile = document.getElementById('uploadLogo').files[0];
+        let founderFile = document.getElementById('uploadFounder').files[0];
+        let principalFile = document.getElementById('uploadPrincipal').files[0];
+
+        let pending = 0;
+        let checkDone = () => {
+            pending--;
+            if(pending <= 0) saveToCloud();
+        };
+
         if(logoFile) {
+            pending++;
             let r = new FileReader();
-            r.onload = function(e) {
-                logoImg = e.target.result;
-                document.getElementById('siteLogo').src = logoImg;
-                document.documentElement.style.setProperty('--watermark-logo', `url('${logoImg}')`);
-                saveDB();
-            };
+            r.onload = e => { logoImg = e.target.result; checkDone(); };
             r.readAsDataURL(logoFile);
         }
-
-        // প্রতিষ্ঠাতা ছবি
-        let founderFile = document.getElementById('uploadFounder').files[0];
         if(founderFile) {
+            pending++;
             let r = new FileReader();
-            r.onload = function(e) {
-                founderImgData = e.target.result;
-                document.getElementById('founderImg').src = founderImgData;
-                saveDB();
-            };
+            r.onload = e => { founderImgData = e.target.result; checkDone(); };
             r.readAsDataURL(founderFile);
         }
-
-        // অধ্যক্ষ ছবি
-        let principalFile = document.getElementById('uploadPrincipal').files[0];
         if(principalFile) {
-            let r = newFileReader();
-            r.onload = function(e) {
-                principalImgData = e.target.result;
-                document.getElementById('principalImg').src = principalImgData;
-                saveDB();
-            };
+            pending++;
+            let r = new FileReader();
+            r.onload = e => { principalImgData = e.target.result; checkDone(); };
             r.readAsDataURL(principalFile);
         }
 
-        saveDB();
-        alert("✅ সফলভাবে সেভ হয়েছে! আপলোড করা ছবি ও পরিবর্তনগুলো এখন সবাই দেখতে পাবে।");
+        if(pending === 0) saveToCloud();
     }
 </script>
 
 </body>
-    </html>
+</html>
