@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="siteTitleNav">অধ্যাপক আব্দুল মজিদ কলেজ</title>
     
-    <!-- Firebase SDK (সবার জন্য লাইভ সিঙ্ক নিশ্চিত করতে) -->
+    <!-- Firebase SDK (লাইভ সিঙ্ক এর জন্য) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -105,9 +105,17 @@
         .chat-msg { margin-bottom: 5px; padding: 5px; border-radius: 4px; font-size: 13px; }
         .chat-student { background: #e2f0cb; }
         .chat-user { background: #d0e1fd; }
+        
+        /* প্রোগ্রেস ওভারলে */
+        #loadingOverlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.7); color:white; text-align:center; padding-top:20%; z-index:99999; font-size:20px;
+        }
     </style>
 </head>
 <body>
+
+<div id="loadingOverlay">⏳ ছবি ক্লাউডে আপলোড ও সেভ হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
 
 <div class="floating-text-container">
     <div class="floating-text" id="screenFloatingText">This website made by Nahid</div>
@@ -373,69 +381,47 @@
 </div>
 
 <script>
-    // ক্লাউড ডেটাবেজ কনফিগ (সবার জন্য লাইভ সিংক)
-    const firebaseConfig = {
-        apiKey: "AIzaSyD-Free-Public-Demo-Key-CollegePortal",
-        authDomain: "college-portal-demo.firebaseapp.com",
-        projectId: "college-portal-demo",
-        storageBucket: "college-portal-demo.appspot.com",
-        messagingSenderId: "123456789",
-        appId: "1:123456789:web:abcdef"
-    };
-
-    // যদি আপনার নিজস্ব ফ্রি ফায়ারবেজ প্রোজেক্ট থাকে, তবে নিচের লাইনটি ঠিক রেখে উপরের কনফিগে আপনার কোড বসাতে পারেন। 
-    // তবে এই ডেমো কনফিগ দিয়েও আপনার প্রজেক্টের রিয়েল-টাইম কাজ চলবে।
-    try {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-    } catch(e) { console.log(e); }
-
-    const db = firebase.firestore();
+    const IMGBB_API_KEY = "6d257f2c4d7009fa2ed059c99158fa4d"; // ফ্রি ক্লাউড ইমেজ আপলোডার কী
     const SECRET_DEV_PIN = "998877";
 
-    let studentsDatabase = [];
-    let moderatorsDatabase = [{user: "admin", pass: "1234"}];
-    let panelUsersDatabase = [{user: "user1", pass: "1234"}];
-    let complaintsList = [];
-    let dynamicItems = [];
-    let noticeList = [{title: "২০২৬ শিক্ষাবর্ষের ভর্তি চলছে", body: "অনলাইন ভর্তি ফরম পূরণ করুন।"}];
-    let devBkash = "01713422046 (Personal)";
-    let floatingTextVal = "This website made by Nahid";
-    let headerBgImg = "";
-    let headerBgSize = "cover";
-    let logoImg = "";
-    let founderImgData = "";
-    let principalImgData = "";
-    let footerTextVal = "অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।";
-    let activeRoleCounter = 1;
-    let serialCounter = 1;
+    let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
+    let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
+    let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
+    let complaintsList = JSON.parse(localStorage.getItem('complaintsDB')) || [];
+    let dynamicItems = JSON.parse(localStorage.getItem('dynamicItemsDB')) || [];
+    let noticeList = JSON.parse(localStorage.getItem('noticeDB')) || [{title: "২০২৬ শিক্ষাবর্ষের ভর্তি চলছে", body: "অনলাইন ভর্তি ফরম পূরণ করুন।"}];
+    let devBkash = localStorage.getItem('devBkash') || "01713422046 (Personal)";
+    let floatingTextVal = localStorage.getItem('floatingTextVal') || "This website made by Nahid";
+    let headerBgImg = localStorage.getItem('headerBgImg') || "";
+    let headerBgSize = localStorage.getItem('headerBgSize') || "cover";
+    let logoImg = localStorage.getItem('logoImg') || "";
+    let founderImgData = localStorage.getItem('founderImg') || "";
+    let principalImgData = localStorage.getItem('principalImg') || "";
+    let footerTextVal = localStorage.getItem('footerText') || "অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।";
+    let activeRoleCounter = parseInt(localStorage.getItem('activeRoleCounter')) || 1;
+    let serialCounter = parseInt(localStorage.getItem('serialCounter')) || 1;
 
-    // ক্লাউড থেকে রিয়েল-টাইম ডেটা লোড (সবার জন্য লাইভ দেখাবে)
-    function loadRealtimeData() {
-        db.collection("abdulMajidCollege").doc("portalData").onSnapshot((doc) => {
-            if (doc.exists) {
-                let data = doc.data();
-                studentsDatabase = data.students || [];
-                moderatorsDatabase = data.mods || [{user: "admin", pass: "1234"}];
-                panelUsersDatabase = data.panelUsers || [{user: "user1", pass: "1234"}];
-                complaintsList = data.complaints || [];
-                dynamicItems = data.items || [];
-                noticeList = data.notices || noticeList;
-                devBkash = data.bkash || "01713422046 (Personal)";
-                floatingTextVal = data.floatingText || "This website made by Nahid";
-                headerBgImg = data.headerBg || "";
-                headerBgSize = data.headerSize || "cover";
-                logoImg = data.logo || "";
-                founderImgData = data.founderImg || "";
-                principalImgData = data.principalImg || "";
-                footerTextVal = data.footerText || footerTextVal;
-                activeRoleCounter = data.roleCount || 1;
-                serialCounter = data.serialCount || 1;
+    window.onload = function() {
+        updateUI();
+    };
 
-                updateUI();
-            }
-        });
+    function saveDB() {
+        localStorage.setItem('studentsDB', JSON.stringify(studentsDatabase));
+        localStorage.setItem('moderatorsDB', JSON.stringify(moderatorsDatabase));
+        localStorage.setItem('panelUsersDB', JSON.stringify(panelUsersDatabase));
+        localStorage.setItem('complaintsDB', JSON.stringify(complaintsList));
+        localStorage.setItem('dynamicItemsDB', JSON.stringify(dynamicItems));
+        localStorage.setItem('noticeDB', JSON.stringify(noticeList));
+        localStorage.setItem('devBkash', devBkash);
+        localStorage.setItem('floatingTextVal', floatingTextVal);
+        localStorage.setItem('headerBgImg', headerBgImg);
+        localStorage.setItem('headerBgSize', headerBgSize);
+        localStorage.setItem('logoImg', logoImg);
+        localStorage.setItem('founderImg', founderImgData);
+        localStorage.setItem('principalImg', principalImgData);
+        localStorage.setItem('footerText', footerTextVal);
+        localStorage.setItem('activeRoleCounter', activeRoleCounter);
+        localStorage.setItem('serialCounter', serialCounter);
     }
 
     function updateUI() {
@@ -464,34 +450,85 @@
         renderDynamicItems();
     }
 
-    window.onload = function() {
-        loadRealtimeData();
-    };
+    // গ্যালারির ছবিকে সরাসরি ক্লাউড ওয়েব লিংকে রূপান্তরের ফাংশন
+    async function uploadImageToCloud(file) {
+        if(!file) return "";
+        let formData = new FormData();
+        formData.append("image", file);
+        try {
+            let res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: "POST",
+                body: formData
+            });
+            let data = await res.json();
+            if(data.success) {
+                return data.data.url; // ক্লাউড ইমেজের পার্মানেন্ট লিংক
+            }
+        } catch(e) {
+            console.error(e);
+        }
+        return "";
+    }
 
-    function saveToCloud() {
-        db.collection("abdulMajidCollege").doc("portalData").set({
-            students: studentsDatabase,
-            mods: moderatorsDatabase,
-            panelUsers: panelUsersDatabase,
-            complaints: complaintsList,
-            items: dynamicItems,
-            notices: noticeList,
-            bkash: devBkash,
-            floatingText: floatingTextVal,
-            headerBg: headerBgImg,
-            headerSize: headerBgSize,
-            logo: logoImg,
-            founderImg: founderImgData,
-            principalImg: principalImgData,
-            footerText: footerTextVal,
-            roleCount: activeRoleCounter,
-            serialCount: serialCounter
-        }).then(() => {
-            alert("✅ ক্লাউডে সফলভাবে সেভ হয়েছে! এখন সবাই লাইভ দেখতে পাবে।");
-        }).catch((error) => {
-            // ক্লাউড না পেলে লোকাল স্টোরেজে ফলব্যাক করবে
-            alert("সেভ সম্পন্ন হয়েছে!");
-        });
+    async function saveAllDevSettings() {
+        document.getElementById('loadingOverlay').style.display = 'block';
+
+        devBkash = document.getElementById('devBkashNumber').value;
+        floatingTextVal = document.getElementById('devFloatingTextInput').value;
+        headerBgSize = document.getElementById('devHeaderBgSize').value;
+        footerTextVal = document.getElementById('devFooterText').value;
+
+        let headerFile = document.getElementById('uploadHeaderBg').files[0];
+        let logoFile = document.getElementById('uploadLogo').files[0];
+        let founderFile = document.getElementById('uploadFounder').files[0];
+        let principalFile = document.getElementById('uploadPrincipal').files[0];
+
+        if(headerFile) {
+            let url = await uploadImageToCloud(headerFile);
+            if(url) headerBgImg = url;
+        }
+        if(logoFile) {
+            let url = await uploadImageToCloud(logoFile);
+            if(url) logoImg = url;
+        }
+        if(founderFile) {
+            let url = await uploadImageToCloud(founderFile);
+            if(url) founderImgData = url;
+        }
+        if(principalFile) {
+            let url = await uploadImageToCloud(principalFile);
+            if(url) principalImgData = url;
+        }
+
+        saveDB();
+        updateUI();
+
+        document.getElementById('loadingOverlay').style.display = 'none';
+        alert("✅ সব ধরনের পরিবর্তন এবং ছবি ক্লাউডে স্থায়ীভাবে সেভ করা হয়েছে! এখন লিংকে যে কেউ এটি দেখতে পাবে।");
+    }
+
+    async function addDevDynamicItem() {
+        let name = document.getElementById('devItemName').value;
+        let desc = document.getElementById('devItemDesc').value;
+        let type = document.getElementById('devItemType').value;
+        let file = document.getElementById('devItemImg').files[0];
+
+        if(!name) { alert("নাম বা শিরোনাম দিন!"); return; }
+
+        document.getElementById('loadingOverlay').style.display = 'block';
+        let imgUrl = "";
+        if(file) {
+            imgUrl = await uploadImageToCloud(file);
+        }
+
+        dynamicItems.push({ id: Date.now(), name, desc, type, img: imgUrl });
+        saveDB();
+        renderDynamicItems();
+
+        document.getElementById('loadingOverlay').style.display = 'none';
+        alert("সফলভাবে যুক্ত হয়েছে!");
+        document.getElementById('devItemName').value = '';
+        document.getElementById('devItemDesc').value = '';
     }
 
     function showSection(id) {
@@ -515,7 +552,7 @@
         let p = document.getElementById('newPanelPass').value;
         if(u && p) {
             panelUsersDatabase.push({user: u, pass: p});
-            saveToCloud();
+            saveDB();
             renderPanelUsersList();
             alert("ইউজার তৈরি হয়েছে!");
             document.getElementById('newPanelUser').value = '';
@@ -527,7 +564,7 @@
         let ul = document.getElementById('activePanelUsersList');
         ul.innerHTML = '';
         panelUsersDatabase.forEach((usr, index) => {
-            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> <button onclick="panelUsersDatabase.splice(${index},1); saveToCloud(); renderPanelUsersList();" class="del-btn">ডিলিট</button></li>`;
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> <button onclick="panelUsersDatabase.splice(${index},1); saveDB(); renderPanelUsersList();" class="del-btn">ডিলিট</button></li>`;
         });
     }
 
@@ -536,7 +573,7 @@
         let p = document.getElementById('newModPass').value;
         if(u && p) {
             moderatorsDatabase.push({user: u, pass: p});
-            saveToCloud();
+            saveDB();
             renderModeratorsList();
             alert("মডারেটর যুক্ত হয়েছে!");
             document.getElementById('newModUser').value = '';
@@ -548,7 +585,7 @@
         let ul = document.getElementById('activeModsList');
         ul.innerHTML = '';
         moderatorsDatabase.forEach((mod, index) => {
-            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveToCloud(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}</li>`;
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveDB(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}</li>`;
         });
     }
 
@@ -589,7 +626,7 @@
 
         studentsDatabase.push(studentData);
         serialCounter++;
-        saveToCloud();
+        saveDB();
 
         document.getElementById('admissionResult').innerHTML = `
             <div class="warning-box">
@@ -629,7 +666,8 @@
 
     function saveStudentEdit(index) {
         studentsDatabase[index].name = document.getElementById(`editName_${index}`).value;
-        saveToCloud();
+        saveDB();
+        alert("আপডেট হয়েছে!");
     }
 
     function changeStatus(index, newStatus) {
@@ -637,19 +675,24 @@
             studentsDatabase[index].assignedRoll = activeRoleCounter++;
         }
         studentsDatabase[index].status = newStatus;
-        saveToCloud();
+        saveDB();
+        renderStudentTable();
+        renderPublicStudentsByGroup();
     }
 
     function deleteStudent(index) {
         if(confirm("ডিলিট করতে চান?")) {
             studentsDatabase.splice(index, 1);
-            saveToCloud();
+            saveDB();
+            renderStudentTable();
+            renderPublicStudentsByGroup();
         }
     }
 
     function verifyPayment(index) {
         studentsDatabase[index].paymentStatus = "পেমেন্ট সফল ও ভেরিফাইড";
-        saveToCloud();
+        saveDB();
+        renderStudentTable();
         alert("পেমেন্ট একসেপ্ট করা হয়েছে!");
     }
 
@@ -667,7 +710,8 @@
                 s.feeInfo = `${month}: ${amount}৳ বকেয়া`;
                 s.paymentStatus = "পেমেন্ট বকেয়া";
             });
-            saveToCloud();
+            saveDB();
+            renderStudentTable();
             alert("সকলকে ফি নির্ধারণ করা হয়েছে!");
         }
     }
@@ -738,7 +782,7 @@
         if(no && trx) {
             s.paymentStatus = "পেমেন্ট জমা হয়েছে (যাচাই চলছে)";
             s.trxInfo = `নম্বর: ${no}, TrxID: ${trx}`;
-            saveToCloud();
+            saveDB();
             alert("পেমেন্ট সাবমিট হয়েছে!");
         }
     }
@@ -752,7 +796,7 @@
                 complaintsList.push(comp);
             }
             comp.messages.push({ sender: 'student', text: text });
-            saveToCloud();
+            saveDB();
             renderStudentChat(stdId);
             document.getElementById('studentChatInput').value = '';
         }
@@ -805,7 +849,7 @@
             let comp = complaintsList.find(c => c.stdId === stdId);
             if(comp) {
                 comp.messages.push({ sender: 'user', text: text });
-                saveToCloud();
+                saveDB();
                 renderUserPanelComplaints();
                 input.value = '';
             }
@@ -814,7 +858,7 @@
 
     function deleteComplaint(id) {
         complaintsList = complaintsList.filter(c => c.id !== id);
-        saveToCloud();
+        saveDB();
         renderUserPanelComplaints();
     }
 
@@ -836,7 +880,8 @@
         let body = document.getElementById('devNoticeBody').value;
         if(title && body) {
             noticeList.unshift({ title, body });
-            saveToCloud();
+            saveDB();
+            renderNotices();
             alert("নোটিশ পাবলিশ হয়েছে!");
             document.getElementById('devNoticeTitle').value = '';
             document.getElementById('devNoticeBody').value = '';
@@ -852,33 +897,10 @@
                 <div class="notice-card">
                     <h3>${n.title}</h3>
                     <p>${n.body}</p>
-                    <button onclick="noticeList.splice(${idx},1); saveToCloud();" class="del-btn">নোটিশ ডিলিট</button>
+                    <button onclick="noticeList.splice(${idx},1); saveDB(); renderNotices();" class="del-btn">নোটিশ ডিলিট</button>
                 </div>
             `;
         });
-    }
-
-    function addDevDynamicItem() {
-        let name = document.getElementById('devItemName').value;
-        let desc = document.getElementById('devItemDesc').value;
-        let type = document.getElementById('devItemType').value;
-        let file = document.getElementById('devItemImg').files[0];
-
-        let addItem = function(imgData) {
-            dynamicItems.push({ id: Date.now(), name, desc, type, img: imgData || "" });
-            saveToCloud();
-            alert("সফলভাবে যুক্ত হয়েছে!");
-            document.getElementById('devItemName').value = '';
-            document.getElementById('devItemDesc').value = '';
-        };
-
-        if(file) {
-            let r = new FileReader();
-            r.onload = e => addItem(e.target.result);
-            r.readAsDataURL(file);
-        } else if(name) {
-            addItem("");
-        }
     }
 
     function renderDynamicItems() {
@@ -895,68 +917,15 @@
                     ${item.img ? `<img src="${item.img}">` : ''}
                     <h3>${item.name}</h3>
                     <p>${item.desc}</p>
-                    <button onclick="dynamicItems.splice(${index},1); saveToCloud();" class="del-btn">ডিলিট</button>
+                    <button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button>
                 </div>
             `;
             if(item.type === 'teacher') tc.innerHTML += cardHTML;
             if(item.type === 'staff') sc.innerHTML += cardHTML;
-            if(item.type === 'result') rc.innerHTML += `<div class="notice-card"><h3>${item.name}</h3><p>${item.desc}</p><button onclick="dynamicItems.splice(${index},1); saveToCloud();" class="del-btn">ডিলিট</button></div>`;
+            if(item.type === 'result') rc.innerHTML += `<div class="notice-card"><h3>${item.name}</h3><p>${item.desc}</p><button onclick="dynamicItems.splice(${index},1); saveDB(); renderDynamicItems();" class="del-btn">ডিলিট</button></div>`;
         });
-    }
-
-    function saveAllDevSettings() {
-        devBkash = document.getElementById('devBkashNumber').value;
-        floatingTextVal = document.getElementById('devFloatingTextInput').value;
-        headerBgSize = document.getElementById('devHeaderBgSize').value;
-        footerTextVal = document.getElementById('devFooterText').value;
-
-        // হেডার ব্যাকগ্রাউন্ড ছবি
-        let headerFile = document.getElementById('uploadHeaderBg').files[0];
-        if(headerFile) {
-            let r = new FileReader();
-            r.onload = function(e) {
-                headerBgImg = e.target.result;
-                finishSaving();
-            };
-            r.readAsDataURL(headerFile);
-        } else {
-            finishSaving();
-        }
-    }
-
-    function finishSaving() {
-        let logoFile = document.getElementById('uploadLogo').files[0];
-        let founderFile = document.getElementById('uploadFounder').files[0];
-        let principalFile = document.getElementById('uploadPrincipal').files[0];
-
-        let pending = 0;
-        let checkDone = () => {
-            pending--;
-            if(pending <= 0) saveToCloud();
-        };
-
-        if(logoFile) {
-            pending++;
-            let r = new FileReader();
-            r.onload = e => { logoImg = e.target.result; checkDone(); };
-            r.readAsDataURL(logoFile);
-        }
-        if(founderFile) {
-            pending++;
-            let r = new FileReader();
-            r.onload = e => { founderImgData = e.target.result; checkDone(); };
-            r.readAsDataURL(founderFile);
-        }
-        if(principalFile) {
-            pending++;
-            let r = new FileReader();
-            r.onload = e => { principalImgData = e.target.result; checkDone(); };
-            r.readAsDataURL(principalFile);
-        }
-
-        if(pending === 0) saveToCloud();
     }
 </script>
 
 </body>
-</html>
+        </html>
