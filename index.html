@@ -14,34 +14,30 @@
 
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             background-color: var(--bg-color); 
             color: var(--text-color); 
-            position: relative; 
-            overflow-x: hidden; 
+            position: relative; overflow-x: hidden; 
         }
 
-        /* মূল ডিসপ্লের মাঝখানে ঝাপসা ওয়াটারমার্ক লোগো (Watermark Logo) */
+        /* ওয়াটারমার্ক লোগো ব্যাকগ্রাউন্ড */
         body::before {
             content: "";
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 380px;
-            height: 380px;
-            background-image: url('https://via.placeholder.com/380?text=COLLEGE+LOGO');
+            width: 380px; height: 380px;
+            background-image: var(--watermark-logo, url('https://via.placeholder.com/380?text=LOGO'));
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            opacity: 0.08; /* হালকা ঝাপসা ইফেক্ট */
+            opacity: 0.08;
             pointer-events: none;
             z-index: 0;
             border-radius: 50%;
         }
         
-        /* ডিসপ্লের উপর এলোমেলো ও মসৃণভাবে ঘুরতে থাকা ভাসমান টেক্সট */
+        /* ভাসমান টেক্সট */
         .floating-text-container { position: fixed; top: 15%; left: 5%; width: 90%; height: 70vh; pointer-events: none; z-index: 999; overflow: hidden; }
         .floating-text { position: absolute; font-size: 20px; font-weight: bold; color: rgba(0, 77, 64, 0.22); white-space: nowrap; animation: floatAround 18s ease-in-out infinite alternate; }
         @keyframes floatAround {
@@ -54,24 +50,16 @@
 
         .marquee-container { background: #111; color: rgba(255, 255, 255, 0.8); font-size: 14px; padding: 6px 0; white-space: nowrap; overflow: hidden; position: relative; z-index: 2; }
         
-        /* কাস্টম হেডার সেকশন (ছবি ব্যাকগ্রাউন্ড সুবিধা) */
         header { 
             background-color: var(--primary-color);
+            background-image: var(--header-bg-img, none);
             background-repeat: no-repeat;
             background-position: center center;
             background-size: cover;
-            color: white; 
-            text-align: center; 
-            padding: 35px 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 20px; 
-            flex-wrap: wrap; 
-            transition: 0.3s;
-            position: relative;
-            z-index: 2;
-            box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.35); /* লেখার স্পষ্টতার জন্য হালকা ডার্ক ফিল্টার */
+            color: white; text-align: center; padding: 35px 20px; 
+            display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; 
+            transition: 0.3s; position: relative; z-index: 2;
+            box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.35);
         }
         header img { max-height: 90px; max-width: 90px; object-fit: cover; border-radius: 8px; border: 2px solid white; background: #fff; }
         
@@ -154,7 +142,7 @@
     <div id="home" class="section active">
         <div class="notice-card" style="text-align: center; background: #e8f5e9; border-color: #2e7d32;">
             <p id="homeWelcomeSpeech" style="font-size: 16px; font-weight: bold; margin: 0;">
-                "আসসালামু আলাইকুম। অধ্যাপক আব্দুল মজিদ কলেজের অফিশিয়াল পোর্টালে আপনাদের স্বাগতম। আধুনিক ও মানসম্মত শিক্ষার প্রসারে আমরা বদ্ধপরিকর।"
+                "আসসালামু আলাইকুম। অধ্যাপক আব্দুল মজিদ কলেজের অফিশিয়াল পোর্টালে আপনাদের স্বাগতম।"
             </p>
         </div>
         <h2 style="margin-top:20px;">কলেজের বিবরণ ও ইতিহাস</h2>
@@ -182,9 +170,7 @@
 
     <div id="admission-rules" class="section">
         <h2>অনলাইন ভর্তির নিয়মাবলী</h2>
-        <div id="admissionRulesContent" class="notice-card">
-            <ul><li>সঠিক তথ্য দিয়ে ফরম পূরণ করুন।</li></ul>
-        </div>
+        <div id="admissionRulesContent" class="notice-card"><ul><li>সঠিক তথ্য দিয়ে ফরম পূরণ করুন।</li></ul></div>
     </div>
 
     <div id="teachers" class="section">
@@ -295,14 +281,13 @@
         </div>
 
         <div id="userControls" style="display: none;">
-            <div class="success-box">স্বাগতম ইউজার প্যানেলে! শিক্ষার্থীদের কমপ্লেইন দেখে সমাধান ও রিপ্লাই দিন।</div>
+            <div class="success-box">স্বাগতম ইউজার প্যানেলে!</div>
             <hr>
             <h3>শিক্ষার্থীদের সমস্যা ও চ্যাট বক্স:</h3>
             <div id="userPanelComplaintsList"></div>
         </div>
     </div>
 
-    <!-- ডেভেলপার প্যানেল (ছবি ব্যাকগ্রাউন্ড ও সাইজ ফিট করার সুবিধা) -->
     <div id="developer-panel" class="section">
         <h2>🔒 ডেভেলপার প্যানেল (Super Admin)</h2>
         <div id="devAuth">
@@ -318,23 +303,16 @@
             <div class="success-box">🔓 ডেভেলপার প্যানেল ফুল এক্সেস গ্রান্টেড!</div>
 
             <hr>
-            <h3>১. হেডারের ব্যাকগ্রাউন্ডে আব্দুল মজিদ কলেজের ছবি ও লোগো সেটআপ</h3>
+            <h3>১. হেডারের ব্যাকগ্রাউন্ড ছবি ও লোগো আপলোড (গ্যালারি থেকে)</h3>
+            <div class="form-group"><label>হেডার ব্যাকগ্রাউন্ড ছবি:</label><input type="file" id="uploadHeaderBg" accept="image/*"></div>
             <div class="form-group">
-                <label>হেডারের জন্য কলেজের ছবি আপলোড করুন:</label>
-                <input type="file" id="uploadHeaderBg" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label>হেডার ছবির এডজাস্টমেন্ট / সাইজ মোড (Size Fitting):</label>
+                <label>ছবির ফিটিং মোড (Size Fit):</label>
                 <select id="devHeaderBgSize">
-                    <option value="cover">Cover (পুরো হেডার জুড়েই ফিট হবে)</option>
-                    <option value="contain">Contain (ছবির পুরোটা দেখা যাবে)</option>
-                    <option value="100% 100%">Fill Entire Area (টেনে সমান করা)</option>
+                    <option value="cover">Cover (পুরো হেডার জুড়ে)</option>
+                    <option value="contain">Contain (পুরো ছবি দেখা যাবে)</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>কলেজ লোগো আপলোড (ডিসপ্লের ব্যাকগ্রাউন্ডেও ওয়াটারমার্ক হবে):</label>
-                <input type="file" id="uploadLogo" accept="image/*">
-            </div>
+            <div class="form-group"><label>লোগো ছবি (ওয়াটারমার্ক হিসেবেও সেট হবে):</label><input type="file" id="uploadLogo" accept="image/*"></div>
 
             <hr>
             <h3>২. ইউজার ও মডারেটর অ্যাকাউন্ট তৈরি করুন</h3>
@@ -349,14 +327,14 @@
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৩. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
-            <div class="form-group"><label>ঘুরতে থাকা টেক্সট:</label><input type="text" id="devFloatingTextInput"></div>
-            <div class="form-group"><label>বিকাশ নম্বর:</label><input type="text" id="devBkashNumber"></div>
+            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড</h3>
+            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি:</label><input type="file" id="uploadFounder" accept="image/*"></div>
+            <div class="form-group"><label>অধ্যক্ষের ছবি:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
 
             <hr>
-            <h3>৪. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড</h3>
-            <div class="form-group"><label>প্রতিষ্ঠাতা:</label><input type="file" id="uploadFounder" accept="image/*"></div>
-            <div class="form-group"><label>অধ্যক্ষ:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
+            <h3>৪. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
+            <div class="form-group"><label>ঘুরতে থাকা টেক্সট:</label><input type="text" id="devFloatingTextInput"></div>
+            <div class="form-group"><label>বিকাশ নম্বর:</label><input type="text" id="devBkashNumber"></div>
 
             <hr>
             <h3>৫. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
@@ -375,7 +353,7 @@
 
             <hr>
             <h3>৬. ফুটার কন্টাক্ট টেক্সট</h3>
-            <div class="form-group"><label>ফুটার কন্টাক্ট:</label><textarea id="devFooterText" rows="2"></textarea></div>
+            <div class="form-group"><label>ফুটার টেক্সট:</label><textarea id="devFooterText" rows="2"></textarea></div>
 
             <hr style="margin-top:20px;">
             <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সংরক্ষণ করুন</button>
@@ -390,6 +368,7 @@
 <script>
     const SECRET_DEV_PIN = "998877";
 
+    // লোকাল স্টোরেজ ডেটা
     let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
     let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
     let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
@@ -397,9 +376,15 @@
     let dynamicItems = JSON.parse(localStorage.getItem('dynamicItemsDB')) || [];
     let devBkash = localStorage.getItem('devBkash') || "01713422046 (Personal)";
     let floatingTextVal = localStorage.getItem('floatingTextVal') || "This website made by Nahid";
+    
+    // ছবিগুলো সরাসরি স্টোরেজে Base64 ফরম্যাটে সেভ হবে যাতে অন্য ফোনেও দেখায়
     let headerBgImg = localStorage.getItem('headerBgImg') || "";
     let headerBgSize = localStorage.getItem('headerBgSize') || "cover";
     let logoImg = localStorage.getItem('logoImg') || "";
+    let founderImgData = localStorage.getItem('founderImg') || "";
+    let principalImgData = localStorage.getItem('principalImg') || "";
+    let footerTextVal = localStorage.getItem('footerText') || "অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।";
+
     let activeRoleCounter = parseInt(localStorage.getItem('activeRoleCounter')) || 1;
     let serialCounter = parseInt(localStorage.getItem('serialCounter')) || 1;
 
@@ -408,32 +393,27 @@
         document.getElementById('devFloatingTextInput').value = floatingTextVal;
         document.getElementById('devBkashNumber').value = devBkash;
         document.getElementById('devHeaderBgSize').value = headerBgSize;
+        document.getElementById('devFooterText').value = footerTextVal;
+        document.getElementById('customFooterArea').innerText = footerTextVal;
 
         if(headerBgImg) {
+            document.documentElement.style.setProperty('--header-bg-img', `url('${headerBgImg}')`);
             let hdr = document.getElementById('mainHeader');
-            hdr.style.backgroundImage = `url('${headerBgImg}')`;
             hdr.style.backgroundSize = headerBgSize;
         }
 
         if(logoImg) {
             document.getElementById('siteLogo').src = logoImg;
-            updateWatermarkLogo(logoImg);
+            document.documentElement.style.setProperty('--watermark-logo', `url('${logoImg}')`);
         }
+
+        if(founderImgData) document.getElementById('founderImg').src = founderImgData;
+        if(principalImgData) document.getElementById('principalImg').src = principalImgData;
 
         renderStudentTable();
         renderPublicStudentsByGroup();
         renderDynamicItems();
     };
-
-    function updateWatermarkLogo(url) {
-        let styleTag = document.getElementById('dynamicWatermarkStyle');
-        if(!styleTag) {
-            styleTag = document.createElement('style');
-            styleTag.id = 'dynamicWatermarkStyle';
-            document.head.appendChild(styleTag);
-        }
-        styleTag.innerHTML = `body::before { background-image: url('${url}') !important; }`;
-    }
 
     function saveDB() {
         localStorage.setItem('studentsDB', JSON.stringify(studentsDatabase));
@@ -446,6 +426,9 @@
         localStorage.setItem('headerBgImg', headerBgImg);
         localStorage.setItem('headerBgSize', headerBgSize);
         localStorage.setItem('logoImg', logoImg);
+        localStorage.setItem('founderImg', founderImgData);
+        localStorage.setItem('principalImg', principalImgData);
+        localStorage.setItem('footerText', footerTextVal);
         localStorage.setItem('activeRoleCounter', activeRoleCounter);
         localStorage.setItem('serialCounter', serialCounter);
     }
@@ -473,7 +456,7 @@
             panelUsersDatabase.push({user: u, pass: p});
             saveDB();
             renderPanelUsersList();
-            alert("ইউজার প্যানেল অ্যাকাউন্ট তৈরি হয়েছে!");
+            alert("ইউজার তৈরি হয়েছে!");
             document.getElementById('newPanelUser').value = '';
             document.getElementById('newPanelPass').value = '';
         }
@@ -483,9 +466,7 @@
         let ul = document.getElementById('activePanelUsersList');
         ul.innerHTML = '';
         panelUsersDatabase.forEach((usr, index) => {
-            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> 
-                <button onclick="panelUsersDatabase.splice(${index},1); saveDB(); renderPanelUsersList();" class="del-btn">ডিলিট</button>
-            </li>`;
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> <button onclick="panelUsersDatabase.splice(${index},1); saveDB(); renderPanelUsersList();" class="del-btn">ডিলিট</button></li>`;
         });
     }
 
@@ -506,9 +487,7 @@
         let ul = document.getElementById('activeModsList');
         ul.innerHTML = '';
         moderatorsDatabase.forEach((mod, index) => {
-            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> 
-                ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveDB(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}
-            </li>`;
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${mod.user}</b> ${index !== 0 ? `<button onclick="moderatorsDatabase.splice(${index},1); saveDB(); renderModeratorsList();" class="del-btn">ডিলিট</button>` : ''}</li>`;
         });
     }
 
@@ -759,7 +738,7 @@
             box.innerHTML += `
                 <div class="warning-box">
                     স্টুডেন্ট আইডি: <b>${c.stdId}</b>
-                    <div class="chat-box" id="userChatBox_${c.stdId}">${chatHtml}</div>
+                    <div class="chat-box">${chatHtml}</div>
                     <input type="text" id="userReplyInput_${c.stdId}" placeholder="উত্তর লিখুন..." style="margin-bottom:8px;">
                     <button onclick="sendUserReply('${c.stdId}')" style="background:#0275d8; padding:5px 10px; font-size:13px;">রিপ্লাই পাঠান</button>
                     <button onclick="deleteComplaint(${c.id})" class="del-btn">সমাধান শেষ (ডিলিট)</button>
@@ -808,8 +787,8 @@
         let type = document.getElementById('devItemType').value;
         let file = document.getElementById('devItemImg').files[0];
 
-        let addItem = function(imgUrl) {
-            dynamicItems.push({ id: Date.now(), name, desc, type, img: imgUrl || "" });
+        let addItem = function(imgData) {
+            dynamicItems.push({ id: Date.now(), name, desc, type, img: imgData || "" });
             saveDB();
             renderDynamicItems();
             alert("সফলভাবে যুক্ত হয়েছে!");
@@ -852,62 +831,66 @@
         devBkash = document.getElementById('devBkashNumber').value;
         floatingTextVal = document.getElementById('devFloatingTextInput').value;
         headerBgSize = document.getElementById('devHeaderBgSize').value;
-        document.getElementById('screenFloatingText').innerText = floatingTextVal;
-        
-        let footerTxt = document.getElementById('devFooterText').value;
-        if(footerTxt) document.getElementById('customFooterArea').innerText = footerTxt;
+        footerTextVal = document.getElementById('devFooterText').value;
 
-        // হেডার ব্যাকগ্রাউন্ড ছবি প্রসেসিং
+        document.getElementById('screenFloatingText').innerText = floatingTextVal;
+        if(footerTextVal) document.getElementById('customFooterArea').innerText = footerTextVal;
+
+        // হেডার ব্যাকগ্রাউন্ড ছবি প্রসেসিং (গ্যালারি থেকে)
         let headerFile = document.getElementById('uploadHeaderBg').files[0];
         if(headerFile) {
             let r = new FileReader();
             r.onload = function(e) {
                 headerBgImg = e.target.result;
+                document.documentElement.style.setProperty('--header-bg-img', `url('${headerBgImg}')`);
                 let hdr = document.getElementById('mainHeader');
-                hdr.style.backgroundImage = `url('${headerBgImg}')`;
                 hdr.style.backgroundSize = headerBgSize;
                 saveDB();
             };
             r.readAsDataURL(headerFile);
-        } else {
-            let hdr = document.getElementById('mainHeader');
-            if(headerBgImg) {
-                hdr.style.backgroundImage = `url('${headerBgImg}')`;
-                hdr.style.backgroundSize = headerBgSize;
-            }
         }
 
-        // লোগো প্রসেসিং (হেডার লোগো এবং ওয়াটারমার্ক লোগো)
+        // লোগো প্রসেসিং (গ্যালারি থেকে)
         let logoFile = document.getElementById('uploadLogo').files[0];
         if(logoFile) {
             let r = new FileReader();
             r.onload = function(e) {
                 logoImg = e.target.result;
                 document.getElementById('siteLogo').src = logoImg;
-                updateWatermarkLogo(logoImg);
+                document.documentElement.style.setProperty('--watermark-logo', `url('${logoImg}')`);
                 saveDB();
             };
             r.readAsDataURL(logoFile);
         }
 
-        let founder = document.getElementById('uploadFounder').files[0];
-        if(founder) {
+        // প্রতিষ্ঠাতা ছবি
+        let founderFile = document.getElementById('uploadFounder').files[0];
+        if(founderFile) {
             let r = new FileReader();
-            r.onload = e => { document.getElementById('founderImg').src = e.target.result; saveDB(); };
-            r.readAsDataURL(founder);
+            r.onload = function(e) {
+                founderImgData = e.target.result;
+                document.getElementById('founderImg').src = founderImgData;
+                saveDB();
+            };
+            r.readAsDataURL(founderFile);
         }
 
-        let principal = document.getElementById('uploadPrincipal').files[0];
-        if(principal) {
-            let r = new FileReader();
-            r.onload = e => { document.getElementById('principalImg').src = e.target.result; saveDB(); };
-            r.readAsDataURL(principal);
+        // অধ্যক্ষ ছবি
+        let principalFile = document.getElementById('uploadPrincipal').files[0];
+        if(principalFile) {
+            let r = newFileReader();
+            r.onload = function(e) {
+                principalImgData = e.target.result;
+                document.getElementById('principalImg').src = principalImgData;
+                saveDB();
+            };
+            r.readAsDataURL(principalFile);
         }
 
         saveDB();
-        alert("হেডার ছবি, ব্যাকগ্রাউন্ড ওয়াটারমার্ক লোগো এবং সকল পরিবর্তন সফলভাবে সেভ হয়েছে!");
+        alert("✅ সফলভাবে সেভ হয়েছে! আপলোড করা ছবি ও পরিবর্তনগুলো এখন সবাই দেখতে পাবে।");
     }
 </script>
 
 </body>
-</html>
+    </html>
