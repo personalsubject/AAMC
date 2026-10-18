@@ -21,6 +21,7 @@
             position: relative; overflow-x: hidden; 
         }
 
+        /* ওয়াটারমার্ক ব্যাকগ্রাউন্ড লোগো */
         body::before {
             content: "";
             position: fixed;
@@ -101,17 +102,9 @@
         .chat-msg { margin-bottom: 5px; padding: 5px; border-radius: 4px; font-size: 13px; }
         .chat-student { background: #e2f0cb; }
         .chat-user { background: #d0e1fd; }
-        
-        /* প্রোগ্রেস ওভারলে */
-        #loadingOverlay {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.7); color:white; text-align:center; padding-top:20%; z-index:99999; font-size:20px;
-        }
     </style>
 </head>
 <body>
-
-<div id="loadingOverlay">⏳ ছবি প্রসেস ও সেভ হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
 
 <div class="floating-text-container">
     <div class="floating-text" id="screenFloatingText">This website made by Nahid</div>
@@ -288,7 +281,7 @@
         <div id="userControls" style="display: none;">
             <div class="success-box">স্বাগতম ইউজার প্যানেলে!</div>
             <hr>
-            <h3>শিক্ষার্থীদের সমস্যা ও চ্যাট বক্স:</h3>
+            <h3>शिक्षার্থীদের সমস্যা ও চ্যাট বক্স:</h3>
             <div id="userPanelComplaintsList"></div>
         </div>
     </div>
@@ -308,8 +301,11 @@
             <div class="success-box">🔓 ডেভেলপার প্যানেল ফুল এক্সেস গ্রান্টেড!</div>
 
             <hr>
-            <h3>১. হেডারের ব্যাকগ্রাউন্ড ছবি ও লোগো আপলোড (গ্যালারি থেকে)</h3>
-            <div class="form-group"><label>হেডার ব্যাকগ্রাউন্ড ছবি:</label><input type="file" id="uploadHeaderBg" accept="image/*"></div>
+            <h3>১. ব্যাকগ্রাউন্ড ছবি ও লোগোর ইউআরএল (URL)</h3>
+            <div class="form-group">
+                <label>হেডার ব্যাকগ্রাউন্ড ছবির URL:</label>
+                <input type="text" id="devHeaderBgUrlInput" placeholder="https://example.com/header-bg.jpg">
+            </div>
             <div class="form-group">
                 <label>ছবির ফিটিং মোড:</label>
                 <select id="devHeaderBgSize">
@@ -317,7 +313,10 @@
                     <option value="contain">Contain (পুরো ছবি দেখা যাবে)</option>
                 </select>
             </div>
-            <div class="form-group"><label>লোগো ছবি (ওয়াটারমার্ক হিসেবেও সেট হবে):</label><input type="file" id="uploadLogo" accept="image/*"></div>
+            <div class="form-group">
+                <label>লোগো ছবির URL (ওয়াটারমার্ক হিসেবেও দেখাবে):</label>
+                <input type="text" id="devLogoUrlInput" placeholder="https://example.com/logo.png">
+            </div>
 
             <hr>
             <h3>২. ইউজার ও মডারেটর অ্যাকাউন্ট তৈরি করুন</h3>
@@ -332,9 +331,15 @@
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড (মুজিব স্যার ও অন্যান্য)</h3>
-            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি (অধ্যাপক আব্দুল মজিদ):</label><input type="file" id="uploadFounder" accept="image/*"></div>
-            <div class="form-group"><label>অধ্যক্ষের ছবি (মুজিব স্যার / অধ্যক্ষ):</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
+            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবির ইউআরএল (URL)</h3>
+            <div class="form-group">
+                <label>প্রতিষ্ঠাতার ছবির URL (অধ্যাপক আব্দুল মজিদ):</label>
+                <input type="text" id="devFounderUrlInput" placeholder="https://example.com/founder.jpg">
+            </div>
+            <div class="form-group">
+                <label>অধ্যক্ষের ছবির URL (মুজিব স্যার / অধ্যক্ষ):</label>
+                <input type="text" id="devPrincipalUrlInput" placeholder="https://example.com/principal.jpg">
+            </div>
 
             <hr>
             <h3>৪. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
@@ -348,10 +353,10 @@
             <button onclick="addNewNoticeFromDev()">নোটিশ পাবলিশ করুন</button>
 
             <hr>
-            <h3>৬. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
+            <h3>৬. শিক্ষক, স্টাফ বা ফলাফলের ছবি যুক্ত করুন (URL দিয়ে)</h3>
             <div class="form-group"><label>নাম / শিরোনাম:</label><input type="text" id="devItemName"></div>
             <div class="form-group"><label>পদবী / বিবরণ:</label><input type="text" id="devItemDesc"></div>
-            <div class="form-group"><label>ছবি:</label><input type="file" id="devItemImg" accept="image/*"></div>
+            <div class="form-group"><label>ছবির URL:</label><input type="text" id="devItemImgUrl" placeholder="https://example.com/image.jpg"></div>
             <div class="form-group">
                 <label>টাইপ:</label>
                 <select id="devItemType">
@@ -367,7 +372,7 @@
             <div class="form-group"><label>ফুটার টেক্সট:</label><textarea id="devFooterText" rows="2"></textarea></div>
 
             <hr style="margin-top:20px;">
-            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">লোকাল স্টোরেজে সব পরিবর্তন সেভ করুন</button>
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সেভ করুন</button>
         </div>
     </div>
 </div>
@@ -377,10 +382,9 @@
 </div>
 
 <script>
-    const IMGBB_API_KEY = "6d257f2c4d7009fa2ed059c99158fa4d"; 
     const SECRET_DEV_PIN = "998877";
 
-    // সাধারণ LocalStorage ডেটা
+    // LocalStorage ডেটা
     let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
     let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
     let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
@@ -429,6 +433,11 @@
         document.getElementById('devFooterText').value = footerTextVal;
         document.getElementById('customFooterArea').innerText = footerTextVal;
 
+        document.getElementById('devHeaderBgUrlInput').value = headerBgImg;
+        document.getElementById('devLogoUrlInput').value = logoImg;
+        document.getElementById('devFounderUrlInput').value = founderImgData;
+        document.getElementById('devPrincipalUrlInput').value = principalImgData;
+
         if(headerBgImg) {
             document.documentElement.style.setProperty('--header-bg-img', `url('${headerBgImg}')`);
             let hdr = document.getElementById('mainHeader');
@@ -447,85 +456,39 @@
         renderDynamicItems();
     }
 
-    // ছবি আপলোড ফাংশন
-    async function uploadImageToCloud(file) {
-        if(!file) return "";
-        let formData = new FormData();
-        formData.append("image", file);
-        try {
-            let res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: "POST",
-                body: formData
-            });
-            let data = await res.json();
-            if(data.success) {
-                return data.data.url; 
-            }
-        } catch(e) {
-            console.error(e);
-        }
-        return "";
-    }
-
-    async function saveAllDevSettings() {
-        document.getElementById('loadingOverlay').style.display = 'block';
-
+    function saveAllDevSettings() {
         devBkash = document.getElementById('devBkashNumber').value;
         floatingTextVal = document.getElementById('devFloatingTextInput').value;
         headerBgSize = document.getElementById('devHeaderBgSize').value;
         footerTextVal = document.getElementById('devFooterText').value;
 
-        let headerFile = document.getElementById('uploadHeaderBg').files[0];
-        let logoFile = document.getElementById('uploadLogo').files[0];
-        let founderFile = document.getElementById('uploadFounder').files[0];
-        let principalFile = document.getElementById('uploadPrincipal').files[0];
-
-        if(headerFile) {
-            let url = await uploadImageToCloud(headerFile);
-            if(url) headerBgImg = url;
-        }
-        if(logoFile) {
-            let url = await uploadImageToCloud(logoFile);
-            if(url) logoImg = url;
-        }
-        if(founderFile) {
-            let url = await uploadImageToCloud(founderFile);
-            if(url) founderImgData = url;
-        }
-        if(principalFile) {
-            let url = await uploadImageToCloud(principalFile);
-            if(url) principalImgData = url;
-        }
+        headerBgImg = document.getElementById('devHeaderBgUrlInput').value.trim();
+        logoImg = document.getElementById('devLogoUrlInput').value.trim();
+        founderImgData = document.getElementById('devFounderUrlInput').value.trim();
+        principalImgData = document.getElementById('devPrincipalUrlInput').value.trim();
 
         saveDB();
         updateUI();
 
-        document.getElementById('loadingOverlay').style.display = 'none';
-        alert("✅ সব পরিবর্তন ও ছবি লোকাল স্টোরেজে সেভ হয়েছে!");
+        alert("✅ সফলভাবে সেভ হয়েছে! আপনার বসানো URL লিংকগুলোর ছবি এখন লাইভ শো করছে।");
     }
 
-    async function addDevDynamicItem() {
+    function addDevDynamicItem() {
         let name = document.getElementById('devItemName').value;
         let desc = document.getElementById('devItemDesc').value;
         let type = document.getElementById('devItemType').value;
-        let file = document.getElementById('devItemImg').files[0];
+        let imgUrl = document.getElementById('devItemImgUrl').value.trim();
 
         if(!name) { alert("নাম বা শিরোনাম দিন!"); return; }
-
-        document.getElementById('loadingOverlay').style.display = 'block';
-        let imgUrl = "";
-        if(file) {
-            imgUrl = await uploadImageToCloud(file);
-        }
 
         dynamicItems.push({ id: Date.now(), name, desc, type, img: imgUrl });
         saveDB();
         renderDynamicItems();
 
-        document.getElementById('loadingOverlay').style.display = 'none';
         alert("সফলভাবে যুক্ত হয়েছে!");
         document.getElementById('devItemName').value = '';
         document.getElementById('devItemDesc').value = '';
+        document.getElementById('devItemImgUrl').value = '';
     }
 
     function showSection(id) {
@@ -925,4 +888,4 @@
 </script>
 
 </body>
-    </html>
+</html>
