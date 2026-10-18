@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="siteTitleNav">অধ্যাপক আব্দুল মজিদ কলেজ</title>
-    
-    <!-- Firebase SDK (লাইভ সিঙ্ক এর জন্য) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
@@ -115,7 +111,7 @@
 </head>
 <body>
 
-<div id="loadingOverlay">⏳ ছবি ক্লাউডে আপলোড ও সেভ হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
+<div id="loadingOverlay">⏳ ছবি প্রসেস ও সেভ হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div>
 
 <div class="floating-text-container">
     <div class="floating-text" id="screenFloatingText">This website made by Nahid</div>
@@ -336,9 +332,9 @@
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড</h3>
-            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি:</label><input type="file" id="uploadFounder" accept="image/*"></div>
-            <div class="form-group"><label>অধ্যক্ষের ছবি:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
+            <h3>৩. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড (মুজিব স্যার ও অন্যান্য)</h3>
+            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি (অধ্যাপক আব্দুল মজিদ):</label><input type="file" id="uploadFounder" accept="image/*"></div>
+            <div class="form-group"><label>অধ্যক্ষের ছবি (মুজিব স্যার / অধ্যক্ষ):</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
 
             <hr>
             <h3>৪. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
@@ -371,7 +367,7 @@
             <div class="form-group"><label>ফুটার টেক্সট:</label><textarea id="devFooterText" rows="2"></textarea></div>
 
             <hr style="margin-top:20px;">
-            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">ক্লাউডে সব পরিবর্তন সেভ করুন</button>
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">লোকাল স্টোরেজে সব পরিবর্তন সেভ করুন</button>
         </div>
     </div>
 </div>
@@ -381,9 +377,10 @@
 </div>
 
 <script>
-    const IMGBB_API_KEY = "6d257f2c4d7009fa2ed059c99158fa4d"; // ফ্রি ক্লাউড ইমেজ আপলোডার কী
+    const IMGBB_API_KEY = "6d257f2c4d7009fa2ed059c99158fa4d"; 
     const SECRET_DEV_PIN = "998877";
 
+    // সাধারণ LocalStorage ডেটা
     let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
     let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
     let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
@@ -450,7 +447,7 @@
         renderDynamicItems();
     }
 
-    // গ্যালারির ছবিকে সরাসরি ক্লাউড ওয়েব লিংকে রূপান্তরের ফাংশন
+    // ছবি আপলোড ফাংশন
     async function uploadImageToCloud(file) {
         if(!file) return "";
         let formData = new FormData();
@@ -462,7 +459,7 @@
             });
             let data = await res.json();
             if(data.success) {
-                return data.data.url; // ক্লাউড ইমেজের পার্মানেন্ট লিংক
+                return data.data.url; 
             }
         } catch(e) {
             console.error(e);
@@ -504,7 +501,7 @@
         updateUI();
 
         document.getElementById('loadingOverlay').style.display = 'none';
-        alert("✅ সব ধরনের পরিবর্তন এবং ছবি ক্লাউডে স্থায়ীভাবে সেভ করা হয়েছে! এখন লিংকে যে কেউ এটি দেখতে পাবে।");
+        alert("✅ সব পরিবর্তন ও ছবি লোকাল স্টোরেজে সেভ হয়েছে!");
     }
 
     async function addDevDynamicItem() {
@@ -928,4 +925,4 @@
 </script>
 
 </body>
-        </html>
+    </html>
