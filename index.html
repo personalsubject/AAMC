@@ -13,27 +13,37 @@
         }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); position: relative; overflow-x: hidden; }
-        
-        /* ডিসপ্লের চারপাশে এলোমেলো ও মসৃণভাবে ঘুরতে থাকা ভাসমান টেক্সট (Floating Text) */
-        .floating-text-container {
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            position: relative; 
+            overflow-x: hidden; 
+        }
+
+        /* মূল ডিসপ্লের মাঝখানে ঝাপসা ওয়াটারমার্ক লোগো (Watermark Logo) */
+        body::before {
+            content: "";
             position: fixed;
-            top: 15%;
-            left: 5%;
-            width: 90%;
-            height: 70vh;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            height: 380px;
+            background-image: url('https://via.placeholder.com/380?text=COLLEGE+LOGO');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08; /* হালকা ঝাপসা ইফেক্ট */
             pointer-events: none;
-            z-index: 999;
-            overflow: hidden;
+            z-index: 0;
+            border-radius: 50%;
         }
-        .floating-text {
-            position: absolute;
-            font-size: 20px;
-            font-weight: bold;
-            color: rgba(0, 77, 64, 0.25);
-            white-space: nowrap;
-            animation: floatAround 18s ease-in-out infinite alternate;
-        }
+        
+        /* ডিসপ্লের উপর এলোমেলো ও মসৃণভাবে ঘুরতে থাকা ভাসমান টেক্সট */
+        .floating-text-container { position: fixed; top: 15%; left: 5%; width: 90%; height: 70vh; pointer-events: none; z-index: 999; overflow: hidden; }
+        .floating-text { position: absolute; font-size: 20px; font-weight: bold; color: rgba(0, 77, 64, 0.22); white-space: nowrap; animation: floatAround 18s ease-in-out infinite alternate; }
         @keyframes floatAround {
             0% { top: 10%; left: 10%; transform: rotate(0deg); }
             25% { top: 70%; left: 60%; transform: rotate(5deg); }
@@ -42,21 +52,39 @@
             100% { top: 10%; left: 10%; transform: rotate(0deg); }
         }
 
-        /* হেডার ও চলমান বার */
-        .marquee-container { background: #111; color: rgba(255, 255, 255, 0.7); font-size: 14px; padding: 6px 0; white-space: nowrap; overflow: hidden; }
-        header { background: var(--primary-color); color: white; text-align: center; padding: 20px; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; transition: 0.3s; }
-        header img { max-height: 80px; max-width: 80px; object-fit: cover; border-radius: 8px; border: 2px solid white; }
+        .marquee-container { background: #111; color: rgba(255, 255, 255, 0.8); font-size: 14px; padding: 6px 0; white-space: nowrap; overflow: hidden; position: relative; z-index: 2; }
         
-        nav { background: var(--secondary-color); display: flex; justify-content: center; flex-wrap: wrap; padding: 5px; }
+        /* কাস্টম হেডার সেকশন (ছবি ব্যাকগ্রাউন্ড সুবিধা) */
+        header { 
+            background-color: var(--primary-color);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            color: white; 
+            text-align: center; 
+            padding: 35px 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.35); /* লেখার স্পষ্টতার জন্য হালকা ডার্ক ফিল্টার */
+        }
+        header img { max-height: 90px; max-width: 90px; object-fit: cover; border-radius: 8px; border: 2px solid white; background: #fff; }
+        
+        nav { background: var(--secondary-color); display: flex; justify-content: center; flex-wrap: wrap; padding: 5px; position: relative; z-index: 2; }
         nav a { color: white; text-decoration: none; padding: 10px 14px; font-weight: bold; cursor: pointer; font-size: 14px; }
         nav a:hover { background: rgba(0,0,0,0.2); border-radius: 4px; }
         
-        .container { max-width: 1100px; margin: 25px auto; padding: 25px; background: white; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; z-index: 1; }
+        .container { max-width: 1100px; margin: 25px auto; padding: 25px; background: rgba(255, 255, 255, 0.95); border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; z-index: 1; }
         .section { display: none; }
         .active { display: block; }
         
         .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; text-align: center; }
-        .profile-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fafafa; position: relative; }
+        .profile-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: rgba(250, 250, 250, 0.9); position: relative; }
         .profile-card img { width: 130px; height: 150px; object-fit: cover; border-radius: 8px; border: 3px solid var(--secondary-color); margin-bottom: 10px; }
 
         .form-group { margin-bottom: 15px; }
@@ -70,7 +98,7 @@
         table, th, td { border: 1px solid #ddd; padding: 8px; text-align: center; white-space: nowrap; }
         th { background-color: var(--secondary-color); color: white; }
         
-        .notice-card { background: #e0f2f1; padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--secondary-color); border-radius: 4px; position: relative; }
+        .notice-card { background: rgba(224, 242, 241, 0.9); padding: 15px; margin-bottom: 15px; border-left: 5px solid var(--secondary-color); border-radius: 4px; position: relative; }
         .success-box { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; border: 1px solid #c3e6cb; margin-top: 15px; }
         .warning-box { background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; border: 1px solid #ffeeba; margin-top: 15px; }
         .danger-box { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; border: 1px solid #f5c6cb; margin-top: 15px; }
@@ -79,28 +107,30 @@
         .bg-inactive { background-color: #ffc107; color: #333; }
         .bg-active { background-color: #28a745; }
         .bg-banned { background-color: #dc3545; }
-        .not-found { text-align: center; padding: 30px; color: #721c24; background: #f8d7da; border-radius: 5px; font-size: 18px; font-weight: bold; }
-        .footer-info { margin-top: 40px; padding: 20px; background: #263238; color: white; border-radius: 5px; text-align: center; }
+        .footer-info { margin-top: 40px; padding: 20px; background: #263238; color: white; border-radius: 5px; text-align: center; position: relative; z-index: 2; }
         .del-btn { background: #dc3545; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        
+        .chat-box { background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 5px; max-height: 150px; overflow-y: auto; margin-bottom: 8px; text-align: left; }
+        .chat-msg { margin-bottom: 5px; padding: 5px; border-radius: 4px; font-size: 13px; }
+        .chat-student { background: #e2f0cb; }
+        .chat-user { background: #d0e1fd; }
     </style>
 </head>
 <body>
 
-<!-- মূল স্ক্রিনের উপর ভাসমান ও ঘুরতে থাকা কাস্টম টেক্সট -->
 <div class="floating-text-container">
     <div class="floating-text" id="screenFloatingText">This website made by Nahid</div>
 </div>
 
-<!-- উপরে স্ট্রিপ মার্জি -->
 <div class="marquee-container">
     <marquee scrollamount="5">This website made by Nahid &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; অধ্যাপক আব্দুল মজিদ কলেজ অফিশিয়াল পোর্টাল &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; This website made by Nahid</marquee>
 </div>
 
 <header id="mainHeader">
-    <img id="siteLogo" src="https://via.placeholder.com/80?text=LOGO" alt="Logo">
+    <img id="siteLogo" src="https://via.placeholder.com/90?text=LOGO" alt="Logo">
     <div>
-        <h1 id="collegeNameTitle" style="margin:0;">অধ্যাপক আব্দুল মজিদ কলেজ</h1>
-        <p id="collegeSubTitle" style="margin:5px 0 0 0;">রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা | EIIN: 106061</p>
+        <h1 id="collegeNameTitle" style="margin:0; font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.6);">অধ্যাপক আব্দুল মজিদ কলেজ</h1>
+        <p id="collegeSubTitle" style="margin:5px 0 0 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা | EIIN: 106061</p>
     </div>
 </header>
 
@@ -121,19 +151,14 @@
 </nav>
 
 <div class="container">
-    <!-- ১. হোম পেজ -->
     <div id="home" class="section active">
         <div class="notice-card" style="text-align: center; background: #e8f5e9; border-color: #2e7d32;">
             <p id="homeWelcomeSpeech" style="font-size: 16px; font-weight: bold; margin: 0;">
                 "আসসালামু আলাইকুম। অধ্যাপক আব্দুল মজিদ কলেজের অফিশিয়াল পোর্টালে আপনাদের স্বাগতম। আধুনিক ও মানসম্মত শিক্ষার প্রসারে আমরা বদ্ধপরিকর।"
             </p>
         </div>
-
         <h2 style="margin-top:20px;">কলেজের বিবরণ ও ইতিহাস</h2>
-        <p id="collegeHistory">
-            অধ্যাপক আব্দুল মজিদ কলেজ কুমিল্লার মুরাদনগর উপজেলার রামচন্দ্রপুরে ১৯৯৫ সালে প্রতিষ্ঠিত একটি ঐতিহ্যবাহী ও স্বনামধন্য শিক্ষাপ্রতিষ্ঠান।
-        </p>
-
+        <p id="collegeHistory">অধ্যাপক আব্দুল মজিদ কলেজ কুমিল্লার মুরাদনগর উপজেলার রামচন্দ্রপুরে ১৯৯৫ সালে প্রতিষ্ঠিত একটি ঐতিহ্যবাহী শিক্ষাপ্রতিষ্ঠান।</p>
         <div class="profile-grid">
             <div class="profile-card">
                 <img id="founderImg" src="https://via.placeholder.com/130x150?text=Founder" alt="প্রতিষ্ঠাতা">
@@ -148,68 +173,49 @@
         </div>
     </div>
 
-    <!-- ২. নোটিশ বোর্ড -->
     <div id="notice" class="section">
         <h2>নোটিশ বোর্ড</h2>
-        <div id="noticeContainer"></div>
-    </div>
-
-    <!-- ৩. ভর্তির নিয়মাবলী -->
-    <div id="admission-rules" class="section">
-        <h2>অনলাইন ভর্তির নিয়মাবলী ও প্রয়োজনীয় কাগজপত্র</h2>
-        <div id="admissionRulesContent">
-            <div class="notice-card">
-                <ul>
-                    <li>অনলাইন ফরম পূরণের সময় সঠিক তথ্য দিতে হবে।</li>
-                    <li>এসএসসি পরীক্ষার মার্কশিট ও প্রশংসাপত্র সাথে রাখতে হবে।</li>
-                </ul>
-            </div>
+        <div id="noticeContainer">
+            <div class="notice-card"><h3>২০২৬ শিক্ষাবর্ষের ভর্তি চলছে</h3><p>অনলাইন ভর্তি ফরম পূরণ করুন।</p></div>
         </div>
     </div>
 
-    <!-- ৪. শিক্ষকবৃন্দ -->
+    <div id="admission-rules" class="section">
+        <h2>অনলাইন ভর্তির নিয়মাবলী</h2>
+        <div id="admissionRulesContent" class="notice-card">
+            <ul><li>সঠিক তথ্য দিয়ে ফরম পূরণ করুন।</li></ul>
+        </div>
+    </div>
+
     <div id="teachers" class="section">
-        <h2>সম্মানিত শিক্ষক মণ্ডলী</h2>
+        <h2>শিক্ষকবৃন্দ</h2>
         <div id="teachersContainer" class="profile-grid"></div>
     </div>
 
-    <!-- ৫. বাণী -->
     <div id="speech" class="section">
-        <h2>প্রতিষ্ঠাতা ও অধ্যক্ষের বাণী</h2>
-        <div id="speechContainer">
-            <div class="notice-card">
-                <h3>প্রতিষ্ঠাতার বাণী</h3>
-                <p>"শিক্ষা জাতির মেরুদণ্ড। সুশিক্ষায় শিক্ষিত হয়ে দেশকে এগিয়ে নিতে হবে।" — অধ্যাপক আব্দুল মজিদ</p>
-            </div>
-        </div>
+        <h2>বাণী</h2>
+        <div class="notice-card"><h3>প্রতিষ্ঠাতা</h3><p>"শিক্ষা জাতির মেরুদণ্ড।"</p></div>
     </div>
 
-    <!-- ৬. ছাত্র-ছাত্রী (গ্রুপভিত্তিক) -->
     <div id="students-list" class="section">
         <h2>ছাত্র-ছাত্রী তালিকা (বিভাগভিত্তিক)</h2>
-        <h3>বিজ্ঞান বিভাগ</h3>
-        <div id="sciStudentsContainer">কোনো সক্রিয় শিক্ষার্থী নেই।</div>
+        <h3>বিজ্ঞান বিভাগ</h3><div id="sciStudentsContainer">কোনো শিক্ষার্থী নেই।</div>
         <hr style="margin:20px 0;">
-        <h3>মানবিক বিভাগ</h3>
-        <div id="artsStudentsContainer">কোনো সক্রিয় শিক্ষার্থী নেই।</div>
+        <h3>মানবিক বিভাগ</h3><div id="artsStudentsContainer">কোনো শিক্ষার্থী নেই।</div>
         <hr style="margin:20px 0;">
-        <h3>ব্যবসায় শিক্ষা বিভাগ</h3>
-        <div id="comStudentsContainer">কোনো সক্রিয় শিক্ষার্থী নেই।</div>
+        <h3>ব্যবসায় শিক্ষা বিভাগ</h3><div id="comStudentsContainer">কোনো শিক্ষার্থী নেই।</div>
     </div>
 
-    <!-- ৭. স্টাফ -->
     <div id="staff" class="section">
-        <h2>অফিস স্টাফবৃন্দ</h2>
+        <h2>স্টাফবৃন্দ</h2>
         <div id="staffContainer" class="profile-grid"></div>
     </div>
 
-    <!-- ৮. ফলাফল -->
     <div id="results" class="section">
-        <h2>একাডেমিক ফলাফল</h2>
+        <h2>ফলাফল</h2>
         <div id="resultsContainer"></div>
     </div>
 
-    <!-- ৯. অনলাইন ভর্তি ফরম -->
     <div id="admission" class="section">
         <h2>অনলাইন ভর্তি ফরম</h2>
         <div id="admissionWrapper">
@@ -227,20 +233,19 @@
                     </select>
                 </div>
                 <div class="form-group"><label>এসএসসি রোল:</label><input type="number" id="sscRoll" required></div>
-                <div class="form-group"><label>এসএসসি জিপিএ (GPA):</label><input type="text" id="sscGpa" required></div>
+                <div class="form-group"><label>এসএসসি জিপিএ:</label><input type="text" id="sscGpa" required></div>
                 <button type="submit">আবেদন জমা দিন</button>
             </form>
             <div id="admissionResult"></div>
         </div>
     </div>
 
-    <!-- ১০. স্টুডেন্ট লগইন -->
     <div id="student-login" class="section">
         <h2>স্টুডেন্ট লগইন প্যানেল</h2>
         <div id="studentLoginBox">
             <form onsubmit="handleStudentLogin(event)">
                 <div class="form-group">
-                    <label>আপনার স্টুডেন্ট আইডি দিন:</label>
+                    <label>স্টুডেন্ট আইডি:</label>
                     <input type="text" id="loginStudentId" placeholder="যেমন: 2026001" required>
                 </div>
                 <button type="submit">লগইন</button>
@@ -249,43 +254,31 @@
         <div id="studentProfile"></div>
     </div>
 
-    <!-- ১১. মডারেটর প্যানেল -->
     <div id="admin-panel" class="section">
-        <h2>মডারেটর / এডমিন কন্ট্রোল প্যানেল</h2>
+        <h2>মডারেটর প্যানেল</h2>
         <div id="adminAuth">
             <div class="form-group"><label>ইউজারনেম:</label><input type="text" id="adminUser"></div>
             <div class="form-group"><label>পাসওয়ার্ড:</label><input type="password" id="adminPass"></div>
-            <button onclick="loginAdmin()">লগইন করুন</button>
+            <button onclick="loginAdmin()">লগইন</button>
         </div>
 
         <div id="dashboard" style="display: none;">
-            <p style="color: green; font-weight: bold;">স্বাগতম! মডারেটর ড্যাশবোর্ড</p>
-            
-            <div class="form-group" style="margin-top:15px; background: #e0f2f1; padding: 10px; border-radius: 5px;">
-                <label>🔍 শিক্ষার্থী খুঁজুন (আইডি বা রোল দিয়ে):</label>
+            <p style="color: green; font-weight: bold;">মডারেটর ড্যাশবোর্ড</p>
+            <div class="form-group" style="background: #e0f2f1; padding: 10px; border-radius: 5px;">
+                <label>🔍 শিক্ষার্থী খুঁজুন:</label>
                 <input type="text" id="searchStudentInput" placeholder="আইডি বা রোল লিখে সার্চ করুন..." onkeyup="searchStudentData()">
             </div>
-
             <div style="background: #fff3cd; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
-                <h4>মাসিক ফি ও পেমেন্ট ম্যানেজমেন্ট</h4>
+                <h4>মাসিক ফি ও পেমেন্ট নির্ধারণ</h4>
                 <input type="text" id="feeMonthName" placeholder="মাসের নাম (যেমন: জানুয়ারি ২০২৬)" style="margin-bottom:8px;">
                 <input type="number" id="feeAmount" placeholder="টাকার পরিমাণ" style="margin-bottom:8px;">
                 <button onclick="applyMonthlyFeeToAll()" style="background:#ffc107; color:#000;">সকলকে ফি নির্ধারণ করুন</button>
             </div>
-
             <hr>
-            <h3>শিক্ষার্থীদের তথ্য ও পেমেন্ট যাচাই</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>আইডি</th>
-                        <th>নাম</th>
-                        <th>পিতা/মাতা</th>
-                        <th>মোবাইল</th>
-                        <th>গ্রুপ</th>
-                        <th>রোল/জিপিএ</th>
-                        <th>পেমেন্ট স্ট্যাটাস</th>
-                        <th>অ্যাকশন</th>
+                        <th>আইডি</th><th>নাম</th><th>পিতা/মাতা</th><th>মোবাইল</th><th>গ্রুপ</th><th>রোল/জিপিএ</th><th>পেমেন্ট ও বকেয়া</th><th>অ্যাকশন</th>
                     </tr>
                 </thead>
                 <tbody id="studentTableBody"></tbody>
@@ -293,28 +286,27 @@
         </div>
     </div>
 
-    <!-- ১২. ইউজার প্যানেল (সমস্যা সমাধান ও সাপোর্ট) -->
     <div id="user-panel" class="section">
-        <h2>🎧 ইউজার প্যানেল (সমস্যা সমাধান কেন্দ্র)</h2>
+        <h2>🎧 ইউজার প্যানেল (সমস্যা সমাধান ও চ্যাট)</h2>
         <div id="userAuth">
-            <div class="form-group"><label>ইউজার এডমিন পাসওয়ার্ড:</label><input type="password" id="userPassInput" placeholder="পাসওয়ার্ড দিন"></div>
-            <button onclick="loginUserPanel()" style="background:#0275d8;">প্রবেশ করুন</button>
+            <div class="form-group"><label>ইউজার আইডি:</label><input type="text" id="panelUserLoginName" placeholder="ইউজারনেম"></div>
+            <div class="form-group"><label>পাসওয়ার্ড:</label><input type="password" id="panelUserLoginPass" placeholder="পাসওয়ার্ড"></div>
+            <button onclick="loginUserPanel()" style="background:#0275d8;">ইউজার হিসেবে প্রবেশ করুন</button>
         </div>
 
         <div id="userControls" style="display: none;">
-            <div class="success-box">স্বাগতম ইউজার প্যানেলে! শিক্ষার্থীদের জমাকৃত সমস্যা ও ছবি সমাধান করুন।</div>
+            <div class="success-box">স্বাগতম ইউজার প্যানেলে! শিক্ষার্থীদের কমপ্লেইন দেখে সমাধান ও রিপ্লাই দিন।</div>
             <hr>
-            <h3>শিক্ষার্থীদের জমাকৃত সমস্যা ও রিপোর্ট তালিকা:</h3>
+            <h3>শিক্ষার্থীদের সমস্যা ও চ্যাট বক্স:</h3>
             <div id="userPanelComplaintsList"></div>
         </div>
     </div>
 
-    <!-- ১৩. ডেভেলপার প্যানেল -->
+    <!-- ডেভেলপার প্যানেল (ছবি ব্যাকগ্রাউন্ড ও সাইজ ফিট করার সুবিধা) -->
     <div id="developer-panel" class="section">
         <h2>🔒 ডেভেলপার প্যানেল (Super Admin)</h2>
-        
         <div id="devAuth">
-            <div class="warning-box">নিরাপত্তার জন্য ডেভেলপার সিক্রেট পিন কোড লিখুন।</div>
+            <div class="warning-box">নিরাপত্তার জন্য ডেভেলপার সিক্রেট পিন কোড দিন।</div>
             <div class="form-group" style="margin-top:15px;">
                 <label>সিক্রেট পিন:</label>
                 <input type="password" id="devPassInput" placeholder="পিন কোড দিন">
@@ -323,55 +315,56 @@
         </div>
 
         <div id="devControls" style="display: none;">
-            <div class="success-box">🔓 ডেভেলপার প্যানেল আনলক হয়েছে!</div>
-            
+            <div class="success-box">🔓 ডেভেলপার প্যানেল ফুল এক্সেস গ্রান্টেড!</div>
+
             <hr>
-            <h3>১. হেড ডিসপ্লেতে এলোমেলোভাবে ঘুরতে থাকা টেক্সট কাস্টমাইজ</h3>
+            <h3>১. হেডারের ব্যাকগ্রাউন্ডে আব্দুল মজিদ কলেজের ছবি ও লোগো সেটআপ</h3>
             <div class="form-group">
-                <label>ডিসপ্লেতে ঘুরতে থাকা টেক্সট:</label>
-                <input type="text" id="devFloatingTextInput" placeholder="যেমন: This website made by Nahid">
+                <label>হেডারের জন্য কলেজের ছবি আপলোড করুন:</label>
+                <input type="file" id="uploadHeaderBg" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>হেডার ছবির এডজাস্টমেন্ট / সাইজ মোড (Size Fitting):</label>
+                <select id="devHeaderBgSize">
+                    <option value="cover">Cover (পুরো হেডার জুড়েই ফিট হবে)</option>
+                    <option value="contain">Contain (ছবির পুরোটা দেখা যাবে)</option>
+                    <option value="100% 100%">Fill Entire Area (টেনে সমান করা)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>কলেজ লোগো আপলোড (ডিসপ্লের ব্যাকগ্রাউন্ডেও ওয়াটারমার্ক হবে):</label>
+                <input type="file" id="uploadLogo" accept="image/*">
             </div>
 
             <hr>
-            <h3>২. সেকশন অন / অফ ও কন্টেন্ট কন্ট্রোল</h3>
-            <div class="form-group">
-                <label><input type="checkbox" id="toggleNotice" checked onchange="toggleSec('notice')"> নোটিশ বোর্ড চালু</label>
-                <label><input type="checkbox" id="toggleRules" checked onchange="toggleSec('rules')"> ভর্তির নিয়মাবলী চালু</label>
-                <label><input type="checkbox" id="toggleTeachers" checked onchange="toggleSec('teachers')"> শিক্ষকবৃন্দ চালু</label>
-                <label><input type="checkbox" id="toggleSpeech" checked onchange="toggleSec('speech')"> বাণী চালু</label>
-                <label><input type="checkbox" id="toggleStudents" checked onchange="toggleSec('students')"> ছাত্র-ছাত্রী তালিকা চালু</label>
-                <label><input type="checkbox" id="toggleStaff" checked onchange="toggleSec('staff')"> স্টাফ চালু</label>
-                <label><input type="checkbox" id="toggleResults" checked onchange="toggleSec('results')"> ফলাফল চালু</label>
-                <label><input type="checkbox" id="toggleAdmission" checked onchange="toggleSec('admission')"> অনলাইন ভর্তি চালু</label>
-            </div>
+            <h3>২. ইউজার ও মডারেটর অ্যাকাউন্ট তৈরি করুন</h3>
+            <div class="form-group"><label>ইউজারনেম:</label><input type="text" id="newPanelUser"></div>
+            <div class="form-group"><label>পাসওয়ার্ড:</label><input type="text" id="newPanelPass"></div>
+            <button onclick="createPanelUser()">ইউজার অ্যাকাউন্ট তৈরি করুন</button>
+            <ul id="activePanelUsersList" style="margin-top:10px;"></ul>
 
-            <hr>
-            <h3>৩. পেমেন্ট বিকাশ নম্বর সেট করুন</h3>
-            <div class="form-group">
-                <label>বিকাশ নম্বর:</label>
-                <input type="text" id="devBkashNumber" value="01713422046 (Personal)">
-            </div>
-
-            <hr>
-            <h3>৪. মডারেটর অ্যাকাউন্ট ম্যানেজমেন্ট (তৈরি ও ডিলিট)</h3>
-            <div class="form-group"><label>নতুন ইউজারনেম:</label><input type="text" id="newModUser"></div>
-            <div class="form-group"><label>নতুন পাসওয়ার্ড:</label><input type="text" id="newModPass"></div>
+            <div class="form-group" style="margin-top:15px;"><label>মডারেটর ইউজারনেম:</label><input type="text" id="newModUser"></div>
+            <div class="form-group"><label>মডারেটর পাসওয়ার্ড:</label><input type="text" id="newModPass"></div>
             <button onclick="createModerator()">মডারেটর যোগ করুন</button>
             <ul id="activeModsList" style="margin-top:10px;"></ul>
 
             <hr>
-            <h3>৫. ছবি ও লোগো আপলোড (গ্যালারি থেকে)</h3>
-            <div class="form-group"><label>লোগো ছবি:</label><input type="file" id="uploadLogo" accept="image/*"></div>
-            <div class="form-group"><label>প্রতিষ্ঠাতার ছবি:</label><input type="file" id="uploadFounder" accept="image/*"></div>
-            <div class="form-group"><label>অধ্যক্ষের ছবি:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
+            <h3>৩. ভাসমান টেক্সট ও বিকাশ নম্বর কাস্টমাইজ</h3>
+            <div class="form-group"><label>ঘুরতে থাকা টেক্সট:</label><input type="text" id="devFloatingTextInput"></div>
+            <div class="form-group"><label>বিকাশ নম্বর:</label><input type="text" id="devBkashNumber"></div>
 
             <hr>
-            <h3>৬. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
+            <h3>৪. প্রতিষ্ঠাতা ও অধ্যক্ষের ছবি আপলোড</h3>
+            <div class="form-group"><label>প্রতিষ্ঠাতা:</label><input type="file" id="uploadFounder" accept="image/*"></div>
+            <div class="form-group"><label>অধ্যক্ষ:</label><input type="file" id="uploadPrincipal" accept="image/*"></div>
+
+            <hr>
+            <h3>৫. শিক্ষক, স্টাফ বা ফলাফল যুক্ত/ডিলিট</h3>
             <div class="form-group"><label>নাম / শিরোনাম:</label><input type="text" id="devItemName"></div>
             <div class="form-group"><label>পদবী / বিবরণ:</label><input type="text" id="devItemDesc"></div>
             <div class="form-group"><label>ছবি:</label><input type="file" id="devItemImg" accept="image/*"></div>
             <div class="form-group">
-                <label>কোথায় যুক্ত করবেন?</label>
+                <label>টাইপ:</label>
                 <select id="devItemType">
                     <option value="teacher">শিক্ষকবৃন্দ</option>
                     <option value="staff">স্টাফ</option>
@@ -381,51 +374,78 @@
             <button onclick="addDevDynamicItem()">যুক্ত করুন</button>
 
             <hr>
-            <h3>৭. ফুটার কন্টাক্ট ইনফরমেশন কাস্টমাইজ</h3>
-            <div class="form-group"><label>ফুটার কন্টাক্ট টেক্সট:</label><textarea id="devFooterText" rows="2">অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা। ফোন: 01713422046</textarea></div>
+            <h3>৬. ফুটার কন্টাক্ট টেক্সট</h3>
+            <div class="form-group"><label>ফুটার কন্টাক্ট:</label><textarea id="devFooterText" rows="2"></textarea></div>
 
             <hr style="margin-top:20px;">
-            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সেভ করুন</button>
+            <button onclick="saveAllDevSettings()" style="background: #28a745; width:100%; font-size:18px;">সব পরিবর্তন সংরক্ষণ করুন</button>
         </div>
     </div>
 </div>
 
 <div class="container" style="padding: 10px; background: transparent; box-shadow: none;">
-    <div id="customFooterArea" class="footer-info">
-        অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা। ফোন: 01713422046
-    </div>
+    <div id="customFooterArea" class="footer-info">অধ্যাপক আব্দুল মজিদ কলেজ, রামচন্দ্রপুর, মুরাদনগর, কুমিল্লা।</div>
 </div>
 
 <script>
     const SECRET_DEV_PIN = "998877";
-    const SECRET_USER_PIN = "123456";
 
-    // লোকাল স্টোরেজ থেকে পারমানেন্ট ডেটা লোড
     let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB')) || [];
     let moderatorsDatabase = JSON.parse(localStorage.getItem('moderatorsDB')) || [{user: "admin", pass: "1234"}];
+    let panelUsersDatabase = JSON.parse(localStorage.getItem('panelUsersDB')) || [{user: "user1", pass: "1234"}];
     let complaintsList = JSON.parse(localStorage.getItem('complaintsDB')) || [];
     let dynamicItems = JSON.parse(localStorage.getItem('dynamicItemsDB')) || [];
     let devBkash = localStorage.getItem('devBkash') || "01713422046 (Personal)";
     let floatingTextVal = localStorage.getItem('floatingTextVal') || "This website made by Nahid";
+    let headerBgImg = localStorage.getItem('headerBgImg') || "";
+    let headerBgSize = localStorage.getItem('headerBgSize') || "cover";
+    let logoImg = localStorage.getItem('logoImg') || "";
     let activeRoleCounter = parseInt(localStorage.getItem('activeRoleCounter')) || 1;
     let serialCounter = parseInt(localStorage.getItem('serialCounter')) || 1;
 
-    // প্রাথমিক লোড ইনিশিয়ালাইজেশন
     window.onload = function() {
         document.getElementById('screenFloatingText').innerText = floatingTextVal;
         document.getElementById('devFloatingTextInput').value = floatingTextVal;
+        document.getElementById('devBkashNumber').value = devBkash;
+        document.getElementById('devHeaderBgSize').value = headerBgSize;
+
+        if(headerBgImg) {
+            let hdr = document.getElementById('mainHeader');
+            hdr.style.backgroundImage = `url('${headerBgImg}')`;
+            hdr.style.backgroundSize = headerBgSize;
+        }
+
+        if(logoImg) {
+            document.getElementById('siteLogo').src = logoImg;
+            updateWatermarkLogo(logoImg);
+        }
+
         renderStudentTable();
         renderPublicStudentsByGroup();
         renderDynamicItems();
     };
 
+    function updateWatermarkLogo(url) {
+        let styleTag = document.getElementById('dynamicWatermarkStyle');
+        if(!styleTag) {
+            styleTag = document.createElement('style');
+            styleTag.id = 'dynamicWatermarkStyle';
+            document.head.appendChild(styleTag);
+        }
+        styleTag.innerHTML = `body::before { background-image: url('${url}') !important; }`;
+    }
+
     function saveDB() {
         localStorage.setItem('studentsDB', JSON.stringify(studentsDatabase));
         localStorage.setItem('moderatorsDB', JSON.stringify(moderatorsDatabase));
+        localStorage.setItem('panelUsersDB', JSON.stringify(panelUsersDatabase));
         localStorage.setItem('complaintsDB', JSON.stringify(complaintsList));
         localStorage.setItem('dynamicItemsDB', JSON.stringify(dynamicItems));
         localStorage.setItem('devBkash', devBkash);
         localStorage.setItem('floatingTextVal', floatingTextVal);
+        localStorage.setItem('headerBgImg', headerBgImg);
+        localStorage.setItem('headerBgSize', headerBgSize);
+        localStorage.setItem('logoImg', logoImg);
         localStorage.setItem('activeRoleCounter', activeRoleCounter);
         localStorage.setItem('serialCounter', serialCounter);
     }
@@ -435,31 +455,38 @@
         document.getElementById(id).classList.add('active');
     }
 
-    function toggleSec(sec) {
-        let el = document.getElementById(sec);
-        if(el) {
-            el.style.display = el.style.display === 'none' ? 'block' : 'none';
-        }
-    }
-
     function loginDeveloper() {
         if(document.getElementById('devPassInput').value === SECRET_DEV_PIN) {
             document.getElementById('devAuth').style.display = 'none';
             document.getElementById('devControls').style.display = 'block';
             renderModeratorsList();
+            renderPanelUsersList();
         } else {
             alert("❌ ভুল পিন কোড!");
         }
     }
 
-    function loginUserPanel() {
-        if(document.getElementById('userPassInput').value === SECRET_USER_PIN) {
-            document.getElementById('userAuth').style.display = 'none';
-            document.getElementById('userControls').style.display = 'block';
-            renderUserPanelComplaints();
-        } else {
-            alert("❌ ভুল ইউজার পাসওয়ার্ড!");
+    function createPanelUser() {
+        let u = document.getElementById('newPanelUser').value;
+        let p = document.getElementById('newPanelPass').value;
+        if(u && p) {
+            panelUsersDatabase.push({user: u, pass: p});
+            saveDB();
+            renderPanelUsersList();
+            alert("ইউজার প্যানেল অ্যাকাউন্ট তৈরি হয়েছে!");
+            document.getElementById('newPanelUser').value = '';
+            document.getElementById('newPanelPass').value = '';
         }
+    }
+
+    function renderPanelUsersList() {
+        let ul = document.getElementById('activePanelUsersList');
+        ul.innerHTML = '';
+        panelUsersDatabase.forEach((usr, index) => {
+            ul.innerHTML += `<li style="margin-bottom:5px;">ইউজার: <b>${usr.user}</b> 
+                <button onclick="panelUsersDatabase.splice(${index},1); saveDB(); renderPanelUsersList();" class="del-btn">ডিলিট</button>
+            </li>`;
+        });
     }
 
     function createModerator() {
@@ -469,7 +496,7 @@
             moderatorsDatabase.push({user: u, pass: p});
             saveDB();
             renderModeratorsList();
-            alert("মডারেটর সফলভাবে তৈরি হয়েছে!");
+            alert("মডারেটর যুক্ত হয়েছে!");
             document.getElementById('newModUser').value = '';
             document.getElementById('newModPass').value = '';
         }
@@ -485,7 +512,19 @@
         });
     }
 
-    // ছাত্র ভর্তি
+    function loginUserPanel() {
+        let u = document.getElementById('panelUserLoginName').value;
+        let p = document.getElementById('panelUserLoginPass').value;
+        let valid = panelUsersDatabase.some(usr => usr.user === u && usr.pass === p);
+        if(valid) {
+            document.getElementById('userAuth').style.display = 'none';
+            document.getElementById('userControls').style.display = 'block';
+            renderUserPanelComplaints();
+        } else {
+            alert("❌ ভুল ইউজারনেম বা পাসওয়ার্ড!");
+        }
+    }
+
     function handleAdmission(e) {
         e.preventDefault();
         let currentYear = new Date().getFullYear();
@@ -537,10 +576,10 @@
                 <td>${std.mobile}</td>
                 <td>${std.group}</td>
                 <td>রোল: ${std.assignedRoll || '-'}<br>জিপিএ: ${std.gpa}</td>
-                <td><b>ফি:</b> ${std.feeInfo}<br><b>পেমেন্ট:</b> ${std.paymentStatus}<br><small>${std.trxInfo}</small></td>
+                <td><b>ফি/বকেয়া:</b> ${std.feeInfo}<br><b>পেমেন্ট:</b> ${std.paymentStatus}</td>
                 <td>
                     <span class="status-badge ${badgeClass}">${std.status}</span><br>
-                    <button onclick="saveStudentEdit(${index})" style="background:#00796b; padding:2px 5px; font-size:10px;">এডিট সেভ</button>
+                    <button onclick="saveStudentEdit(${index})" style="background:#00796b; padding:2px 5px; font-size:10px;">সেভ</button>
                     <button class="btn-act" onclick="changeStatus(${index}, 'Active')">Active</button>
                     <button onclick="verifyPayment(${index})" style="background:#17a2b8; padding:2px 5px; font-size:10px;">পেমেন্ট Accept</button>
                     <button onclick="deleteStudent(${index})" class="del-btn" style="padding:2px 5px; font-size:10px;">ডিলিট</button>
@@ -552,7 +591,7 @@
     function saveStudentEdit(index) {
         studentsDatabase[index].name = document.getElementById(`editName_${index}`).value;
         saveDB();
-        alert("স্টুডেন্ট তথ্য সংরক্ষিত হয়েছে!");
+        alert("আপডেট হয়েছে!");
         renderStudentTable();
         renderPublicStudentsByGroup();
     }
@@ -568,7 +607,7 @@
     }
 
     function deleteStudent(index) {
-        if(confirm("আপনি কি নিশ্চিতভাবে এই শিক্ষার্থীকে ডিলিট করতে চান?")) {
+        if(confirm("ডিলিট করতে চান?")) {
             studentsDatabase.splice(index, 1);
             saveDB();
             renderStudentTable();
@@ -580,7 +619,7 @@
         studentsDatabase[index].paymentStatus = "পেমেন্ট সফল ও ভেরিফাইড";
         saveDB();
         renderStudentTable();
-        alert("পেমেন্ট সফলভাবে গ্রহণ করা হয়েছে!");
+        alert("পেমেন্ট একসেপ্ট করা হয়েছে!");
     }
 
     function searchStudentData() {
@@ -595,11 +634,11 @@
         if(month && amount) {
             studentsDatabase.forEach(s => {
                 s.feeInfo = `${month}: ${amount}৳ বকেয়া`;
-                s.paymentStatus = "পেমেন্ট বকেয়া রয়েছে";
+                s.paymentStatus = "পেমেন্ট বকেয়া";
             });
             saveDB();
             renderStudentTable();
-            alert("সকল শিক্ষার্থীর ফি আপডেট হয়েছে!");
+            alert("সকলকে ফি নির্ধারণ করা হয়েছে!");
         }
     }
 
@@ -632,13 +671,8 @@
         let student = studentsDatabase.find(s => s.id === inputId);
         let profileDiv = document.getElementById('studentProfile');
 
-        if(!student) {
-            profileDiv.innerHTML = `<div class="danger-box">❌ আইডি সঠিক নয়!</div>`;
-            return;
-        }
-
-        if(student.status !== 'Active') {
-            profileDiv.innerHTML = `<div class="warning-box">⚠️ আপনার আইডি এখনো <b>INACTIVE</b> আছে। মডারেটরের অনুমোদন নিন।</div>`;
+        if(!student || student.status !== 'Active') {
+            profileDiv.innerHTML = `<div class="warning-box">⚠️ আইডি সঠিক নয় অথবা এখনো ইনঅ্যাক্টিভ রয়েছে!</div>`;
             return;
         }
 
@@ -646,27 +680,25 @@
             <div class="success-box">
                 <h3>স্টুডেন্ট প্যানেল</h3>
                 <p><b>নাম:</b> ${student.name} | <b>আইডি:</b> ${student.id} | <b>রোল:</b> ${student.assignedRoll}</p>
-                <p><b>পিতা:</b> ${student.father} | <b>মাতা:</b> ${student.mother}</p>
-                <p><b>গ্রুপ:</b> ${student.group} | <b>জিপিএ:</b> ${student.gpa}</p>
-                <hr>
                 <p><b>ফি অবস্থা:</b> <span style="color:red; font-weight:bold;">${student.feeInfo}</span></p>
                 <p><b>পেমেন্ট স্ট্যাটাস:</b> ${student.paymentStatus}</p>
                 
                 <div style="background:#fff; padding:10px; border-radius:5px; margin-top:10px; color:#333;">
-                    <h4>বিকাশ পেমেন্ট করুন</h4>
-                    <p>দয়া করে এই নম্বর পেমেন্ট করুন: <b>${devBkash}</b></p>
+                    <h4>বিকাশ পেমেন্ট</h4>
+                    <p>নম্বর: <b>${devBkash}</b></p>
                     <input type="text" id="paySenderNo" placeholder="আপনার বিকাশ নম্বর" style="margin-bottom:8px;">
-                    <input type="text" id="payTrxId" placeholder="ট্রানজেকশন আইডি (TrxID)" style="margin-bottom:8px;">
-                    <button onclick="submitStudentPayment('${student.id}')" style="background:#28a745;">পেমেন্ট তথ্য সাবমিট করুন</button>
+                    <input type="text" id="payTrxId" placeholder="TrxID" style="margin-bottom:8px;">
+                    <button onclick="submitStudentPayment('${student.id}')" style="background:#28a745;">পেমেন্ট সাবমিট</button>
                 </div>
 
                 <hr style="margin-top:15px;">
-                <h4>কোনো সমস্যা থাকলে মেসেজ বা ছবি পাঠান (ইউজার প্যানেলে যাবে)</h4>
-                <textarea id="studentProblemText" placeholder="আপনার সমস্যাটি এখানে বিস্তারিত লিখুন..." rows="2" style="margin-bottom:8px;"></textarea>
-                <input type="file" id="studentProblemImg" accept="image/*" style="margin-bottom:8px;">
-                <button onclick="submitStudentComplaint('${student.id}')" style="background:#0275d8;">সমস্যা সাবমিট করুন</button>
+                <h4>সহায়তা বা সমস্যা (চ্যাট বক্স)</h4>
+                <div class="chat-box" id="studentChatBox_${student.id}"></div>
+                <input type="text" id="studentChatInput" placeholder="আপনার মেসেজ লিখুন..." style="margin-bottom:8px;">
+                <button onclick="sendStudentChat('${student.id}')" style="background:#0275d8;">মেসেজ পাঠান</button>
             </div>
         `;
+        renderStudentChat(student.id);
     }
 
     function submitStudentPayment(stdId) {
@@ -677,49 +709,84 @@
             s.paymentStatus = "পেমেন্ট জমা হয়েছে (যাচাই চলছে)";
             s.trxInfo = `নম্বর: ${no}, TrxID: ${trx}`;
             saveDB();
-            alert("পেমেন্ট তথ্য সাবমিট করা হয়েছে!");
+            alert("পেমেন্ট সাবমিট হয়েছে!");
             renderStudentTable();
         }
     }
 
-    function submitStudentComplaint(stdId) {
-        let text = document.getElementById('studentProblemText').value;
-        let imgFile = document.getElementById('studentProblemImg').files[0];
-        
-        let processComplaint = function(imgData) {
-            let compObj = { id: Date.now(), stdId: stdId, text: text, img: imgData || "", reply: "" };
-            complaintsList.push(compObj);
+    function sendStudentChat(stdId) {
+        let text = document.getElementById('studentChatInput').value;
+        if(text) {
+            let comp = complaintsList.find(c => c.stdId === stdId);
+            if(!comp) {
+                comp = { id: Date.now(), stdId: stdId, messages: [] };
+                complaintsList.push(comp);
+            }
+            comp.messages.push({ sender: 'student', text: text });
             saveDB();
-            alert("আপনার সমস্যাটি ইউজার প্যানেলে পাঠানো হয়েছে!");
-            document.getElementById('studentProblemText').value = '';
-        };
-
-        if(imgFile) {
-            let reader = new FileReader();
-            reader.onload = e => processComplaint(e.target.result);
-            reader.readAsDataURL(imgFile);
-        } else if(text) {
-            processComplaint("");
+            renderStudentChat(stdId);
+            document.getElementById('studentChatInput').value = '';
         }
+    }
+
+    function renderStudentChat(stdId) {
+        let box = document.getElementById(`studentChatBox_${stdId}`);
+        if(!box) return;
+        let comp = complaintsList.find(c => c.stdId === stdId);
+        if(!comp || comp.messages.length === 0) {
+            box.innerHTML = "কোনো চ্যাট হিস্ট্রি নেই।";
+            return;
+        }
+        box.innerHTML = "";
+        comp.messages.forEach(m => {
+            box.innerHTML += `<div class="chat-msg ${m.sender === 'student' ? 'chat-student' : 'chat-user'}"><b>${m.sender === 'student' ? 'আপনি' : 'ইউজার'}:</b> ${m.text}</div>`;
+        });
+        box.scrollTop = box.scrollHeight;
     }
 
     function renderUserPanelComplaints() {
         let box = document.getElementById('userPanelComplaintsList');
         if(complaintsList.length === 0) {
-            box.innerHTML = "কোনো সমস্যা বা সাপোর্ট রিকোয়েস্ট নেই।";
+            box.innerHTML = "কোনো সমস্যা বা চ্যাট নেই।";
             return;
         }
         box.innerHTML = "";
-        complaintsList.forEach((c, index) => {
+        complaintsList.forEach((c) => {
+            let chatHtml = "";
+            c.messages.forEach(m => {
+                chatHtml += `<div class="chat-msg ${m.sender === 'student' ? 'chat-student' : 'chat-user'}"><b>${m.sender === 'student' ? 'ছাত্র' : 'ইউজার'}:</b> ${m.text}</div>`;
+            });
             box.innerHTML += `
                 <div class="warning-box">
-                    স্টুডেন্ট আইডি: <b>${c.stdId}</b><br>
-                    <b>সমস্যা:</b> ${c.text}<br>
-                    ${c.img ? `<img src="${c.img}" style="max-width:150px; display:block; margin:5px 0;">` : ''}
-                    <button onclick="complaintsList.splice(${index},1); saveDB(); renderUserPanelComplaints();" class="del-btn">সমস্যার সমাধান হয়েছে (ডিলিট)</button>
+                    স্টুডেন্ট আইডি: <b>${c.stdId}</b>
+                    <div class="chat-box" id="userChatBox_${c.stdId}">${chatHtml}</div>
+                    <input type="text" id="userReplyInput_${c.stdId}" placeholder="উত্তর লিখুন..." style="margin-bottom:8px;">
+                    <button onclick="sendUserReply('${c.stdId}')" style="background:#0275d8; padding:5px 10px; font-size:13px;">রিপ্লাই পাঠান</button>
+                    <button onclick="deleteComplaint(${c.id})" class="del-btn">সমাধান শেষ (ডিলিট)</button>
                 </div>
             `;
         });
+    }
+
+    function sendUserReply(stdId) {
+        let input = document.getElementById(`userReplyInput_${stdId}`);
+        let text = input.value;
+        if(text) {
+            let comp = complaintsList.find(c => c.stdId === stdId);
+            if(comp) {
+                comp.messages.push({ sender: 'user', text: text });
+                saveDB();
+                renderUserPanelComplaints();
+                renderStudentChat(stdId);
+                input.value = '';
+            }
+        }
+    }
+
+    function deleteComplaint(id) {
+        complaintsList = complaintsList.filter(c => c.id !== id);
+        saveDB();
+        renderUserPanelComplaints();
     }
 
     function loginAdmin() {
@@ -731,7 +798,7 @@
             document.getElementById('dashboard').style.display = 'block';
             renderStudentTable();
         } else {
-            alert("❌ ভুল মডারেটর ইউজারনেম বা পাসওয়ার্ড!");
+            alert("❌ ভুল মডারেটর পাসওয়ার্ড!");
         }
     }
 
@@ -784,36 +851,63 @@
     function saveAllDevSettings() {
         devBkash = document.getElementById('devBkashNumber').value;
         floatingTextVal = document.getElementById('devFloatingTextInput').value;
+        headerBgSize = document.getElementById('devHeaderBgSize').value;
         document.getElementById('screenFloatingText').innerText = floatingTextVal;
         
         let footerTxt = document.getElementById('devFooterText').value;
-        document.getElementById('customFooterArea').innerText = footerTxt;
+        if(footerTxt) document.getElementById('customFooterArea').innerText = footerTxt;
 
-        let logo = document.getElementById('uploadLogo').files[0];
-        if(logo) {
+        // হেডার ব্যাকগ্রাউন্ড ছবি প্রসেসিং
+        let headerFile = document.getElementById('uploadHeaderBg').files[0];
+        if(headerFile) {
             let r = new FileReader();
-            r.onload = e => document.getElementById('siteLogo').src = e.target.result;
-            r.readAsDataURL(logo);
+            r.onload = function(e) {
+                headerBgImg = e.target.result;
+                let hdr = document.getElementById('mainHeader');
+                hdr.style.backgroundImage = `url('${headerBgImg}')`;
+                hdr.style.backgroundSize = headerBgSize;
+                saveDB();
+            };
+            r.readAsDataURL(headerFile);
+        } else {
+            let hdr = document.getElementById('mainHeader');
+            if(headerBgImg) {
+                hdr.style.backgroundImage = `url('${headerBgImg}')`;
+                hdr.style.backgroundSize = headerBgSize;
+            }
+        }
+
+        // লোগো প্রসেসিং (হেডার লোগো এবং ওয়াটারমার্ক লোগো)
+        let logoFile = document.getElementById('uploadLogo').files[0];
+        if(logoFile) {
+            let r = new FileReader();
+            r.onload = function(e) {
+                logoImg = e.target.result;
+                document.getElementById('siteLogo').src = logoImg;
+                updateWatermarkLogo(logoImg);
+                saveDB();
+            };
+            r.readAsDataURL(logoFile);
         }
 
         let founder = document.getElementById('uploadFounder').files[0];
         if(founder) {
             let r = new FileReader();
-            r.onload = e => document.getElementById('founderImg').src = e.target.result;
+            r.onload = e => { document.getElementById('founderImg').src = e.target.result; saveDB(); };
             r.readAsDataURL(founder);
         }
 
         let principal = document.getElementById('uploadPrincipal').files[0];
         if(principal) {
             let r = new FileReader();
-            r.onload = e => document.getElementById('principalImg').src = e.target.result;
+            r.onload = e => { document.getElementById('principalImg').src = e.target.result; saveDB(); };
             r.readAsDataURL(principal);
         }
 
         saveDB();
-        alert("সকল কাস্টম সেটিং ও পারমানেন্ট ডাটা সেভ হয়েছে!");
+        alert("হেডার ছবি, ব্যাকগ্রাউন্ড ওয়াটারমার্ক লোগো এবং সকল পরিবর্তন সফলভাবে সেভ হয়েছে!");
     }
 </script>
 
 </body>
-                           </html>
+</html>
